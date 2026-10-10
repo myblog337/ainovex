@@ -1,0 +1,144 @@
+UPDATED REQUIREMENT: MANUAL GITHUB AUTHENTICATION FOR EVERY PUBLISH OPERATION
+
+This requirement overrides the previous GitHub credential storage and automatic publishing instructions wherever they conflict.
+
+1. GitHub Settings in Admin Panel
+
+Add a dedicated "GitHub Publishing" section to the AINOVEX Admin Panel.
+
+Provide fields for:
+
+- GitHub Username
+- GitHub Personal Access Token (PAT), using a password-style masked input
+- Repository owner
+- Repository name
+- Target branch
+- Optional commit message
+
+Default repository information may be prefilled if verified from the existing project, but the administrator must be able to review the publishing configuration.
+
+2. Ask for Credentials Every Time
+
+Whenever an administrator initiates a GitHub publishing operation, request the GitHub Username and Personal Access Token again.
+
+Examples of publishing operations:
+
+- Publishing a new article
+- Updating an existing article
+- Deleting or unpublishing an article when the operation requires a GitHub change
+- Creating, updating, or deleting a category
+- Publishing SEO changes
+- Publishing Ads configuration changes
+- Publishing supported website settings
+
+Provide an explicit "Publish to GitHub" or "Sync to GitHub" action.
+
+Do not silently commit changes to GitHub without requesting credentials for that publishing operation.
+
+Allow the administrator to cancel before any remote changes occur.
+
+3. Credential Handling and Privacy
+
+- Never save the submitted Personal Access Token in a database, browser storage, cookies, application logs, source code, Git commits, or persistent application settings.
+- Never display the full token after submission.
+- Never include the token in error messages or debugging output.
+- Do not persist the submitted username and token for future publishing operations.
+- Keep credentials in memory only as long as required for the current operation, then discard them.
+- Never expose credentials to client-side code beyond the submission required for the current authenticated request.
+- Send credentials only over HTTPS to the server-side publishing endpoint.
+- Ensure the token is not forwarded to any domain other than the intended GitHub API.
+- Use the least privilege necessary for the selected repository and operation.
+- Validate the requested repository, branch, and target files against the administrator's authorized configuration.
+- Never allow arbitrary repository paths or unsafe file modifications.
+- Do not accept GitHub credentials from unauthenticated users.
+- Require a valid Admin Panel session before accepting publishing credentials.
+
+4. Server-Side GitHub Publishing
+
+Implement GitHub publishing on the server side.
+
+For each publishing operation:
+
+1. Require an authenticated administrator.
+2. Show the GitHub credential form.
+3. Receive the submitted username and PAT over HTTPS.
+4. Validate the credentials against GitHub using the supported authentication method.
+5. Verify access to the intended repository and branch.
+6. Prepare and validate the exact files that need to change.
+7. Display a summary of files to be created, modified, or deleted.
+8. Require explicit confirmation before committing changes.
+9. Commit only the necessary changes.
+10. Report the actual result and commit reference.
+11. Discard the submitted credentials from application memory as soon as they are no longer needed.
+
+Use the appropriate GitHub API authentication format. Do not assume that a username is sufficient to authenticate a PAT; verify the actual GitHub API requirements and use the username only where useful for display or validation.
+
+Do not automatically push changes to an unintended repository or branch.
+
+5. Publishing Workflow
+
+The publishing workflow must work with the existing AINOVEX source architecture.
+
+For a Markdown-based static website:
+
+- Convert article edits into the correct existing content format.
+- Preserve existing front matter and fields.
+- Preserve established slugs and URLs unless explicitly changed.
+- Update category or configuration files only when necessary.
+- Avoid overwriting unrelated files.
+- Validate the resulting content before committing.
+- Trigger the existing Cloudflare Pages build through the configured GitHub integration.
+
+For Ads Management and Website Settings:
+
+- If the settings are represented by version-controlled source files, prepare the required file changes for GitHub publishing.
+- If a setting is stored only in an external database or service, explain that a GitHub commit will not automatically change that external data.
+- Never claim a database change has been committed to GitHub unless an actual repository commit succeeds.
+
+6. Error Handling
+
+Handle these cases safely:
+
+- Missing username or token
+- Invalid or revoked token
+- Insufficient repository permissions
+- Wrong repository or branch
+- GitHub API rate limits
+- Network errors
+- Conflicting changes
+- Invalid article content
+- Failed commits
+- Failed Cloudflare builds or deployments
+
+Show helpful error messages without revealing credentials.
+
+Do not claim success if GitHub rejects the request or the commit fails.
+
+If GitHub commits successfully but Cloudflare deployment fails, report these as separate statuses.
+
+7. Security Tests
+
+Verify that:
+
+- Every GitHub publishing operation asks for credentials again.
+- A previous token is not reused.
+- Credentials are not stored persistently.
+- Credentials do not appear in browser storage, logs, source code, or generated client assets.
+- Unauthenticated users cannot access the publishing endpoint.
+- A user cannot change an unauthorized repository or branch.
+- Only intended files are committed.
+- The published website receives the changes through the actual deployment workflow.
+
+8. Preserve the Existing Project
+
+Implement this feature with the smallest necessary code changes.
+
+Do not rebuild or redesign the existing public website.
+
+Do not modify unrelated files, article content, SEO, URLs, routing, or deployment configuration.
+
+Reuse existing components and services where appropriate.
+
+List every file created or modified and explain why each change is necessary.
+
+Do not claim the feature works until the complete GitHub publishing workflow has been tested.

@@ -1,0 +1,844 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.2.0
+  description: AINOVEX administration and secure GitHub publishing API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: admin
+    description: Authenticated AINOVEX administration
+  - name: publishing
+    description: Explicit GitHub publishing previews and commits
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /admin/session:
+    get:
+      operationId: getAdminSession
+      tags: [admin]
+      summary: Check the current administrator session
+      responses:
+        "200":
+          description: Authorized administrator
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminSession"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/overview:
+    get:
+      operationId: getAdminOverview
+      tags: [admin]
+      summary: Get current draft, repository, and publishing status
+      responses:
+        "200":
+          description: Current admin overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOverview"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/github-settings:
+    get:
+      operationId: getGitHubSettings
+      tags: [admin]
+      summary: Get saved GitHub repository settings
+      responses:
+        "200":
+          description: Saved non-credential repository settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GitHubSettings"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    put:
+      operationId: saveGitHubSettings
+      tags: [admin]
+      summary: Save the allowed repository, branch, and default commit message
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GitHubSettingsInput"
+      responses:
+        "200":
+          description: Saved repository settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GitHubSettings"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/articles:
+    get:
+      operationId: listArticles
+      tags: [admin]
+      summary: List article drafts and published article snapshots
+      responses:
+        "200":
+          description: Articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Article"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createArticle
+      tags: [admin]
+      summary: Create an article draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleInput"
+      responses:
+        "201":
+          description: Created article draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          description: A draft with this slug already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/articles/{id}:
+    patch:
+      operationId: updateArticle
+      tags: [admin]
+      summary: Update an article draft without changing its established slug
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArticleUpdate"
+      responses:
+        "200":
+          description: Updated article draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Article"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: requestArticleDeletion
+      tags: [admin]
+      summary: Delete a new draft locally or mark a published article for GitHub deletion
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Deletion request status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DraftDeletion"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/categories:
+    get:
+      operationId: listCategories
+      tags: [admin]
+      summary: List category drafts and published category snapshots
+      responses:
+        "200":
+          description: Categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      operationId: createCategory
+      tags: [admin]
+      summary: Create a category draft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Created category draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          description: A category with this slug already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/categories/{id}:
+    patch:
+      operationId: updateCategory
+      tags: [admin]
+      summary: Update a category draft without changing its established slug
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Updated category draft
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      operationId: requestCategoryDeletion
+      tags: [admin]
+      summary: Delete an unused category draft or mark a published category for GitHub deletion
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          description: Deletion request status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DraftDeletion"
+        "400":
+          description: The category is assigned to an article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /admin/site-config:
+    get:
+      operationId: getSiteConfig
+      tags: [admin]
+      summary: Get supported SEO, analytics, and advertising settings
+      responses:
+        "200":
+          description: Current site configuration and publication state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    put:
+      operationId: saveSiteConfig
+      tags: [admin]
+      summary: Save draft SEO and supported website settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteConfigInput"
+      responses:
+        "200":
+          description: Saved site configuration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteConfig"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/publishing/history:
+    get:
+      operationId: listPublishingHistory
+      tags: [admin]
+      summary: List recent GitHub commits and deployment-check results
+      responses:
+        "200":
+          description: Recent publishing results (never credentials)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublishHistoryEntry"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /admin/publishing/previews:
+    post:
+      operationId: createPublishPreview
+      tags: [publishing]
+      summary: Validate credentials and prepare an explicit file-change preview
+      description: Credentials are used only in memory for this operation and are not returned or persisted.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PublishRequest"
+      responses:
+        "200":
+          description: Prepared preview awaiting explicit confirmation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishPreview"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          description: Repository or file conflict
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: GitHub rejected or could not process the request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/publishing/previews/{previewId}/confirm:
+    post:
+      operationId: confirmPublish
+      tags: [publishing]
+      summary: Explicitly confirm and commit the prepared GitHub changes
+      parameters:
+        - name: previewId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Commit result and separately reported GitHub check status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublishResult"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: The branch, configuration, or file changed since preview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: GitHub rejected the commit
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/publishing/previews/{previewId}:
+    delete:
+      operationId: cancelPublishPreview
+      tags: [publishing]
+      summary: Cancel a prepared publish and immediately discard its in-memory credentials
+      parameters:
+        - name: previewId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Preview cancelled and credentials discarded
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Sign in is required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: This account is not an authorized AINOVEX administrator
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    NotFound:
+      description: The requested resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    AdminSession:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin]
+      required: [email, role]
+    AdminOverview:
+      type: object
+      properties:
+        articleCount:
+          type: integer
+        articleDraftCount:
+          type: integer
+        categoryCount:
+          type: integer
+        categoryDraftCount:
+          type: integer
+        siteConfigDraft:
+          type: boolean
+        repositoryConfigured:
+          type: boolean
+        recentPublishing:
+          type: array
+          items:
+            $ref: "#/components/schemas/PublishHistoryEntry"
+      required:
+        - articleCount
+        - articleDraftCount
+        - categoryCount
+        - categoryDraftCount
+        - siteConfigDraft
+        - repositoryConfigured
+        - recentPublishing
+    GitHubSettings:
+      type: object
+      properties:
+        owner:
+          type: string
+        repository:
+          type: string
+        branch:
+          type: string
+        commitMessage:
+          type: string
+        configured:
+          type: boolean
+      required: [owner, repository, branch, commitMessage, configured]
+    GitHubSettingsInput:
+      type: object
+      properties:
+        owner:
+          type: string
+          minLength: 1
+          maxLength: 100
+        repository:
+          type: string
+          minLength: 1
+          maxLength: 100
+        branch:
+          type: string
+          minLength: 1
+          maxLength: 100
+        commitMessage:
+          type: string
+          maxLength: 200
+      required: [owner, repository, branch, commitMessage]
+    Article:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        title: { type: string }
+        description: { type: string }
+        category: { type: string }
+        author: { type: string }
+        date: { type: string }
+        updated: { type: ["string", "null"] }
+        featured: { type: boolean }
+        cornerstone: { type: boolean }
+        primaryKeyword: { type: string }
+        related:
+          type: array
+          items: { type: string }
+        faq: { type: boolean }
+        image: { type: string }
+        imageAlt: { type: string }
+        body: { type: string }
+        extraFrontmatter:
+          type: object
+          additionalProperties: true
+        isPublished: { type: boolean }
+        isDirty: { type: boolean }
+        deleteRequested: { type: boolean }
+      required:
+        - id
+        - slug
+        - title
+        - description
+        - category
+        - author
+        - date
+        - updated
+        - featured
+        - cornerstone
+        - primaryKeyword
+        - related
+        - faq
+        - image
+        - imageAlt
+        - body
+        - extraFrontmatter
+        - isPublished
+        - isDirty
+        - deleteRequested
+    ArticleInput:
+      type: object
+      properties:
+        slug: { type: string, minLength: 1, maxLength: 100 }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, minLength: 1, maxLength: 500 }
+        category: { type: string, minLength: 1, maxLength: 100 }
+        author: { type: string, maxLength: 100 }
+        date: { type: string }
+        updated: { type: ["string", "null"] }
+        featured: { type: boolean }
+        cornerstone: { type: boolean }
+        primaryKeyword: { type: string, maxLength: 200 }
+        related:
+          type: array
+          items: { type: string, maxLength: 100 }
+        faq: { type: boolean }
+        image: { type: string, maxLength: 200 }
+        imageAlt: { type: string, maxLength: 300 }
+        body: { type: string, maxLength: 150000 }
+      required: [slug, title, description, category, date, body]
+    ArticleUpdate:
+      type: object
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        description: { type: string, minLength: 1, maxLength: 500 }
+        category: { type: string, minLength: 1, maxLength: 100 }
+        author: { type: string, maxLength: 100 }
+        date: { type: string }
+        updated: { type: ["string", "null"] }
+        featured: { type: boolean }
+        cornerstone: { type: boolean }
+        primaryKeyword: { type: string, maxLength: 200 }
+        related:
+          type: array
+          items: { type: string, maxLength: 100 }
+        faq: { type: boolean }
+        image: { type: string, maxLength: 200 }
+        imageAlt: { type: string, maxLength: 300 }
+        body: { type: string, maxLength: 150000 }
+      required: [title, description, category, date, body]
+    DraftDeletion:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        requiresPublish: { type: boolean }
+        message: { type: string }
+      required: [id, requiresPublish, message]
+    Category:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        slug: { type: string }
+        name: { type: string }
+        intro: { type: string }
+        isPublished: { type: boolean }
+        isDirty: { type: boolean }
+        deleteRequested: { type: boolean }
+      required: [id, slug, name, intro, isPublished, isDirty, deleteRequested]
+    CategoryInput:
+      type: object
+      properties:
+        slug: { type: string, minLength: 1, maxLength: 100 }
+        name: { type: string, minLength: 1, maxLength: 150 }
+        intro: { type: string, minLength: 1, maxLength: 500 }
+      required: [slug, name, intro]
+    CategoryUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1, maxLength: 150 }
+        intro: { type: string, minLength: 1, maxLength: 500 }
+      required: [name, intro]
+    SiteConfig:
+      type: object
+      properties:
+        siteUrl: { type: string, format: uri }
+        name: { type: string }
+        tagline: { type: string }
+        launched: { type: boolean }
+        ogImage: { type: string }
+        analyticsProvider:
+          type: string
+          enum: ["", google-analytics]
+        analyticsMeasurementId: { type: string }
+        adsenseClient: { type: string }
+        adsenseSlot: { type: string }
+        isDirty: { type: boolean }
+        siteDirty: { type: boolean }
+        adsDirty: { type: boolean }
+      required:
+        - siteUrl
+        - name
+        - tagline
+        - launched
+        - ogImage
+        - analyticsProvider
+        - analyticsMeasurementId
+        - adsenseClient
+        - adsenseSlot
+        - isDirty
+        - siteDirty
+        - adsDirty
+    SiteConfigInput:
+      type: object
+      properties:
+        siteUrl: { type: string, format: uri }
+        name: { type: string, minLength: 1, maxLength: 100 }
+        tagline: { type: string, maxLength: 250 }
+        launched: { type: boolean }
+        ogImage: { type: string, maxLength: 250 }
+        analyticsProvider:
+          type: string
+          enum: ["", google-analytics]
+        analyticsMeasurementId: { type: string, maxLength: 40 }
+        adsenseClient: { type: string, maxLength: 50 }
+        adsenseSlot: { type: string, maxLength: 30 }
+      required:
+        - siteUrl
+        - name
+        - tagline
+        - launched
+        - ogImage
+        - analyticsProvider
+        - analyticsMeasurementId
+        - adsenseClient
+        - adsenseSlot
+    PublishKind:
+      type: string
+      enum: [article, category, site-config, ads]
+    PublishRequest:
+      type: object
+      properties:
+        kind:
+          $ref: "#/components/schemas/PublishKind"
+        resourceId:
+          type: ["string", "null"]
+          format: uuid
+        username: { type: string, minLength: 1, maxLength: 100 }
+        personalAccessToken: { type: string, minLength: 1, maxLength: 500 }
+      required: [kind, username, personalAccessToken]
+    PublishFile:
+      type: object
+      properties:
+        path: { type: string }
+        action:
+          type: string
+          enum: [create, update, delete]
+        additions: { type: integer }
+        deletions: { type: integer }
+        oldContent: { type: ["string", "null"] }
+        newContent: { type: ["string", "null"] }
+      required: [path, action, additions, deletions, oldContent, newContent]
+    PublishPreview:
+      type: object
+      properties:
+        previewId: { type: string, format: uuid }
+        expiresAt: { type: string, format: date-time }
+        owner: { type: string }
+        repository: { type: string }
+        branch: { type: string }
+        commitMessage: { type: string }
+        files:
+          type: array
+          items: { $ref: "#/components/schemas/PublishFile" }
+      required: [previewId, expiresAt, owner, repository, branch, commitMessage, files]
+    DeploymentCheck:
+      type: object
+      properties:
+        context: { type: string }
+        state:
+          type: string
+          enum: [success, failure, error, pending]
+        targetUrl: { type: string }
+      required: [context, state, targetUrl]
+    PublishResult:
+      type: object
+      properties:
+        commitSha: { type: string }
+        commitUrl: { type: string, format: uri }
+        branch: { type: string }
+        path: { type: string }
+        action: { type: string, enum: [create, update, delete] }
+        githubStatus: { type: string, enum: [committed] }
+        deploymentStatus:
+          type: string
+          enum: [reported_success, reported_failure, pending, unreported]
+        deploymentChecks:
+          type: array
+          items: { $ref: "#/components/schemas/DeploymentCheck" }
+        message: { type: string }
+      required:
+        - commitSha
+        - commitUrl
+        - branch
+        - path
+        - action
+        - deploymentStatus
+        - deploymentChecks
+        - message
+    PublishHistoryEntry:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        kind: { $ref: "#/components/schemas/PublishKind" }
+        path: { type: string }
+        action: { type: string, enum: [create, update, delete] }
+        githubStatus: { type: string, enum: [committed] }
+        branch: { type: string }
+        commitSha: { type: string }
+        commitUrl: { type: string, format: uri }
+        deploymentStatus:
+          type: string
+          enum: [reported_success, reported_failure, pending, unreported]
+        deploymentChecks:
+          type: array
+          items: { $ref: "#/components/schemas/DeploymentCheck" }
+        createdAt: { type: string, format: date-time }
+      required:
+        - id
+        - kind
+        - path
+        - action
+        - githubStatus
+        - branch
+        - commitSha
+        - commitUrl
+        - deploymentStatus
+        - deploymentChecks
+        - createdAt
+

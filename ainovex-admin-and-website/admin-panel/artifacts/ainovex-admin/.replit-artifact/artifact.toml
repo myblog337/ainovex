@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AINOVEX Publishing Admin"
+description = "A secure administration app for preparing AINOVEX website changes, reviewing exact GitHub diffs, and publishing them with fresh credentials for each operation."
+version = "1.0.0"
+id = "artifacts/ainovex-admin"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21958
+
+[services.development]
+run = "pnpm --filter @workspace/ainovex-admin run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ainovex-admin", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/ainovex-admin/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21958"
+BASE_PATH = "/"

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ainovex.pages.dev/sitemap.xml

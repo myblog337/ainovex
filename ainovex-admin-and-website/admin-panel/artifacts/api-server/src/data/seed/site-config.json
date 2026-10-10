@@ -1,0 +1,11 @@
+{
+  "siteUrl": "https://ainovex.pages.dev",
+  "name": "AINOVEX",
+  "tagline": "Practical guides to AI tools, compared in plain language.",
+  "launched": false,
+  "ogImage": "/og-default.png",
+  "analyticsProvider": "google-analytics",
+  "analyticsMeasurementId": "",
+  "adsenseClient": "",
+  "adsenseSlot": ""
+}

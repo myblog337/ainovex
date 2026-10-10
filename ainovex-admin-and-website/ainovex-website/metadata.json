@@ -1,0 +1,6 @@
+{
+  "name": "AINOVEX - Best AI Tools, Guides & Comparisons",
+  "description": "Discover the best AI tools, practical guides, comparisons, and workflows to work smarter and build faster with AINOVEX.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

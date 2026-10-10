@@ -1,0 +1,101 @@
+[
+  {
+    "id": "ai-writing",
+    "slug": "ai-writing",
+    "name": "AI Writing",
+    "description": "Smart writing assistants, essay generators, copy tools, and editing platforms.",
+    "icon": "pen-tool",
+    "color": "blue",
+    "bgGradient": "from-blue-500 to-indigo-600",
+    "iconBg": "bg-blue-100 text-blue-600",
+    "count": 14
+  },
+  {
+    "id": "image-generation",
+    "slug": "image-generation",
+    "name": "Image Generation",
+    "description": "High-fidelity text-to-image AI tools, digital art synthesizers, and asset creators.",
+    "icon": "image",
+    "color": "purple",
+    "bgGradient": "from-purple-500 to-pink-500",
+    "iconBg": "bg-purple-100 text-purple-600",
+    "count": 11
+  },
+  {
+    "id": "video-audio",
+    "slug": "video-audio",
+    "name": "Video & Audio",
+    "description": "Generative video editors, voice synthesizers, speech-to-text, and sound tools.",
+    "icon": "video",
+    "color": "pink",
+    "bgGradient": "from-pink-500 to-rose-600",
+    "iconBg": "bg-pink-100 text-pink-600",
+    "count": 9
+  },
+  {
+    "id": "productivity",
+    "slug": "productivity",
+    "name": "Productivity",
+    "description": "Meeting note-takers, PDF summarizers, research planners, and workflow automation.",
+    "icon": "zap",
+    "color": "emerald",
+    "bgGradient": "from-emerald-500 to-teal-600",
+    "iconBg": "bg-emerald-100 text-emerald-600",
+    "count": 18
+  },
+  {
+    "id": "design-art",
+    "slug": "design-art",
+    "name": "Design & Art",
+    "description": "UI/UX mockup assistants, vector generators, graphic layout and template engines.",
+    "icon": "palette",
+    "color": "amber",
+    "bgGradient": "from-amber-500 to-orange-600",
+    "iconBg": "bg-amber-100 text-amber-600",
+    "count": 12
+  },
+  {
+    "id": "code-dev",
+    "slug": "code-dev",
+    "name": "Code & Dev",
+    "description": "Autonomous coding assistants, code explanation, debugging, and IDE extensions.",
+    "icon": "code",
+    "color": "cyan",
+    "bgGradient": "from-cyan-500 to-blue-600",
+    "iconBg": "bg-cyan-100 text-cyan-700",
+    "count": 10
+  },
+  {
+    "id": "business",
+    "slug": "business",
+    "name": "Business",
+    "description": "Market intelligence, customer support bots, data analysis, and pitch decks.",
+    "icon": "trending-up",
+    "color": "sky",
+    "bgGradient": "from-sky-500 to-indigo-600",
+    "iconBg": "bg-sky-100 text-sky-600",
+    "count": 8
+  },
+  {
+    "id": "education",
+    "slug": "education",
+    "name": "Education",
+    "description": "Study aids, flashcard generators, research paper summarizers, and student tools.",
+    "icon": "graduation-cap",
+    "color": "violet",
+    "bgGradient": "from-violet-500 to-purple-600",
+    "iconBg": "bg-violet-100 text-violet-600",
+    "count": 13
+  },
+  {
+    "id": "others",
+    "slug": "others",
+    "name": "Others",
+    "description": "Specialized AI utilities, prompt libraries, testing tools, and emerging models.",
+    "icon": "grid",
+    "color": "slate",
+    "bgGradient": "from-slate-500 to-gray-600",
+    "iconBg": "bg-slate-100 text-slate-600",
+    "count": 7
+  }
+]

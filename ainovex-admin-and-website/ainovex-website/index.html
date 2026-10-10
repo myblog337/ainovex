@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google-site-verification" content="25l3IIHHitkcsv2SJb52iyYaM43jZRa3YWCYC7PAnIM" />
+    <script>
+      try {
+        const theme = localStorage.getItem('ainovex-theme') || 'dark';
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>AINOVEX - Best AI Tools, Guides & Comparisons</title>
+    <meta name="description" content="Discover the best AI tools, practical guides, comparisons, and workflows to work smarter and build faster with AINOVEX." />
+    <link rel="canonical" href="https://ainovex.pages.dev/" />
+    <meta property="og:title" content="AINOVEX - Best AI Tools, Guides & Comparisons" />
+    <meta property="og:description" content="Discover the best AI tools, practical guides, comparisons, and workflows to work smarter and build faster with AINOVEX." />
+    <meta property="og:url" content="https://ainovex.pages.dev/" />
+    <meta property="og:site_name" content="AINOVEX" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://ainovex.pages.dev/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AINOVEX - Best AI Tools, Guides & Comparisons" />
+    <meta name="twitter:description" content="Discover the best AI tools, practical guides, comparisons, and workflows to work smarter and build faster with AINOVEX." />
+    <meta name="twitter:image" content="https://ainovex.pages.dev/og-image.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-[#f8fafc] text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
