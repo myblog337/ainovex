@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AINOVEX - Discover the Best AI Tools & Resources</title>
+    <meta name="description" content="AINOVEX brings you the latest AI tools, helpful guides, tech news and insights." />
+    <meta property="og:title" content="AINOVEX - Discover the Best AI Tools & Resources" />
+    <meta property="og:description" content="AINOVEX brings you the latest AI tools, helpful guides, tech news and insights." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ainovex.pages.dev/" />
+    <meta name="theme-color" content="#0b101b" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:site_name" content="AINOVEX" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AINOVEX - Discover the Best AI Tools & Resources" />
+    <meta name="twitter:description" content="AINOVEX brings you the latest AI tools, helpful guides, tech news and insights." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        try {
+          var mode = localStorage.getItem('ainovex-theme-mode') || localStorage.getItem('ainovex-theme') || 'dark';
+          var active = mode;
+          if (mode === 'system') {
+            active = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          var root = document.documentElement;
+          root.dataset.theme = active;
+          if (active === 'light') {
+            root.classList.remove('dark');
+            root.classList.add('light');
+          } else {
+            root.classList.remove('light');
+            root.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-white text-slate-900 dark:bg-[#0b101b] dark:text-slate-100 antialiased selection:bg-blue-500 selection:text-white min-h-screen transition-colors duration-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

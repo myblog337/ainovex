@@ -1,0 +1,92 @@
+[
+  {
+    "id": "ai-writing",
+    "name": "AI Writing",
+    "slug": "ai-writing",
+    "description": "Discover AI tools for generating high-quality blog posts, essays, copy, and creative writing.",
+    "icon": "PenTool",
+    "color": "blue",
+    "toolCount": 12,
+    "articleCount": 4
+  },
+  {
+    "id": "image-generation",
+    "name": "Image Generation",
+    "slug": "image-generation",
+    "description": "Create stunning photorealistic images, digital art, vectors, and concept graphics from text prompts.",
+    "icon": "Image",
+    "color": "purple",
+    "toolCount": 10,
+    "articleCount": 3
+  },
+  {
+    "id": "video-audio",
+    "name": "Video & Audio",
+    "slug": "video-audio",
+    "description": "Transform text into voiceovers, edit video with AI, generate music, and transcribe speech.",
+    "icon": "Video",
+    "color": "pink",
+    "toolCount": 8,
+    "articleCount": 2
+  },
+  {
+    "id": "productivity",
+    "name": "Productivity",
+    "slug": "productivity",
+    "description": "Supercharge your daily workflow with AI task managers, notes assistants, and automated schedulers.",
+    "icon": "Zap",
+    "color": "emerald",
+    "toolCount": 15,
+    "articleCount": 3
+  },
+  {
+    "id": "design-art",
+    "name": "Design & Art",
+    "slug": "design-art",
+    "description": "Streamline UI/UX design, graphic design, social media templates, and illustration with AI.",
+    "icon": "Palette",
+    "color": "amber",
+    "toolCount": 9,
+    "articleCount": 2
+  },
+  {
+    "id": "code-dev",
+    "name": "Code & Dev",
+    "slug": "code-dev",
+    "description": "AI coding assistants, syntax debuggers, code explanation engines, and terminal companions.",
+    "icon": "Code",
+    "color": "cyan",
+    "toolCount": 11,
+    "articleCount": 3
+  },
+  {
+    "id": "business",
+    "name": "Business",
+    "slug": "business",
+    "description": "Enterprise AI tools for market research, CRM, customer support bots, and business automation.",
+    "icon": "TrendingUp",
+    "color": "teal",
+    "toolCount": 7,
+    "articleCount": 1
+  },
+  {
+    "id": "education",
+    "name": "Education",
+    "slug": "education",
+    "description": "AI study assistants, quiz creators, research summarizers, and personalized learning engines.",
+    "icon": "GraduationCap",
+    "color": "indigo",
+    "toolCount": 6,
+    "articleCount": 2
+  },
+  {
+    "id": "others",
+    "name": "Others",
+    "slug": "others",
+    "description": "Novel AI utilities, search assistants, prompt engineering helpers, and multi-model workspaces.",
+    "icon": "LayoutGrid",
+    "color": "slate",
+    "toolCount": 5,
+    "articleCount": 1
+  }
+]

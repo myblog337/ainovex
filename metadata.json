@@ -1,0 +1,7 @@
+{
+  "name": "AINOVEX - AI Tools & Technology Platform",
+  "description": "AINOVEX brings you the latest AI tools, helpful guides, tech news and insights.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

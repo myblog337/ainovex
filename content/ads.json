@@ -1,0 +1,79 @@
+{
+  "enabled": false,
+  "publisherId": "",
+  "autoAds": false,
+  "testMode": true,
+  "adsTxtContent": "# Google AdSense ads.txt for AINOVEX\n# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0\n",
+  "slots": {
+    "homeBanner": {
+      "id": "homeBanner",
+      "name": "Home Header Leaderboard",
+      "description": "Displays directly below the hero section on the homepage",
+      "enabled": false,
+      "slotId": "",
+      "format": "horizontal",
+      "customCode": "",
+      "label": true
+    },
+    "articleTop": {
+      "id": "articleTop",
+      "name": "Article Top Banner",
+      "description": "Displays above article content under the title & featured media",
+      "enabled": false,
+      "slotId": "",
+      "format": "horizontal",
+      "customCode": "",
+      "label": true
+    },
+    "articleMiddle": {
+      "id": "articleMiddle",
+      "name": "In-Article Inline Banner",
+      "description": "Displays midway through article reading content",
+      "enabled": false,
+      "slotId": "",
+      "format": "rectangle",
+      "customCode": "",
+      "label": true
+    },
+    "articleBottom": {
+      "id": "articleBottom",
+      "name": "Article Bottom Banner",
+      "description": "Displays at the conclusion of article text before related posts",
+      "enabled": false,
+      "slotId": "",
+      "format": "horizontal",
+      "customCode": "",
+      "label": true
+    },
+    "toolsFeed": {
+      "id": "toolsFeed",
+      "name": "AI Tools Directory In-Feed Ad",
+      "description": "Appears between tools cards in directory views",
+      "enabled": false,
+      "slotId": "",
+      "format": "rectangle",
+      "customCode": "",
+      "label": true
+    },
+    "blogFeed": {
+      "id": "blogFeed",
+      "name": "Blog List In-Feed Ad",
+      "description": "Appears between article cards in the blog directory list",
+      "enabled": false,
+      "slotId": "",
+      "format": "horizontal",
+      "customCode": "",
+      "label": true
+    },
+    "footerBanner": {
+      "id": "footerBanner",
+      "name": "Footer Leaderboard Banner",
+      "description": "Displays at the bottom of public pages above the footer",
+      "enabled": false,
+      "slotId": "",
+      "format": "horizontal",
+      "customCode": "",
+      "label": true
+    }
+  }
+}

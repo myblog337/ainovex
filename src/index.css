@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));
+
+/* Smooth transition for theme switching across the entire website */
+html {
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.light {
+  color-scheme: light;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes floatSlowReverse {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes orbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbitSpinReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes corePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 35px rgba(14, 165, 233, 0.45), 0 0 70px rgba(99, 102, 241, 0.25);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 55px rgba(56, 189, 248, 0.75), 0 0 95px rgba(139, 92, 246, 0.45);
+  }
+}
+
+@keyframes starFlare {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 8px #38bdf8) drop-shadow(0 0 16px #818cf8);
+  }
+  50% {
+    transform: scale(1.18) rotate(15deg);
+    filter: drop-shadow(0 0 16px #38bdf8) drop-shadow(0 0 28px #a855f7);
+  }
+}
+
+@keyframes wavePulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatSlowReverse 5.5s ease-in-out infinite;
+}
+
+.animate-orbit-spin {
+  animation: orbitSpin 35s linear infinite;
+}
+
+.animate-orbit-spin-reverse {
+  animation: orbitSpinReverse 25s linear infinite;
+}
+
+.animate-core-pulse {
+  animation: corePulse 4s ease-in-out infinite;
+}
+
+.animate-star-flare {
+  animation: starFlare 3.5s ease-in-out infinite;
+}
+
+.animate-wave-pulse {
+  animation: wavePulse 2.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+@keyframes aiCorePulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px #38bdf8) drop-shadow(0 0 24px #818cf8);
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 24px #38bdf8) drop-shadow(0 0 38px #a855f7) drop-shadow(0 0 16px #22d3ee);
+  }
+}
+
+.animate-ai-core {
+  animation: aiCorePulse 3.2s ease-in-out infinite;
+}
+
+@keyframes holographicOrb {
+  0% {
+    transform: rotate(0deg);
+    filter: brightness(1) contrast(1.02);
+  }
+  50% {
+    transform: rotate(180deg);
+    filter: brightness(1.15) contrast(1.08);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: brightness(1) contrast(1.02);
+  }
+}
+
+.animate-holographic-orb {
+  animation: holographicOrb 16s linear infinite;
+}
+
+@keyframes circuitDataFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -96;
+  }
+}
+
+.animate-circuit-flow {
+  stroke-dasharray: 48 12;
+  animation: circuitDataFlow 4s linear infinite;
+}
+
+
+
+/* ---------- Article body (markdown output) ----------
+   The old markup used `prose-*` classes from @tailwindcss/typography, which is not installed,
+   so headings/lists/tables rendered unstyled. These rules replace it with no extra dependency. */
+.article-content { color: #334155; font-size: 1rem; line-height: 1.8; overflow-wrap: anywhere; }
+.dark .article-content { color: #cbd5e1; }
+.article-content > * + * { margin-top: 1.1em; }
+.article-content h1, .article-content h2, .article-content h3, .article-content h4 { color: #0f172a; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+.dark .article-content h1, .dark .article-content h2, .dark .article-content h3, .dark .article-content h4 { color: #fff; }
+.article-content h1 { font-size: 1.875rem; margin-top: 2em; }
+.article-content h2 { font-size: 1.5rem; margin-top: 2.2em; padding-bottom: .4rem; border-bottom: 1px solid #e2e8f0; }
+.dark .article-content h2 { border-color: #1e293b; }
+.article-content h3 { font-size: 1.25rem; margin-top: 1.6em; }
+.article-content ul { list-style: disc; padding-left: 1.5rem; }
+.article-content ol { list-style: decimal; padding-left: 1.5rem; }
+.article-content li + li { margin-top: .4em; }
+.article-content a { color: #2563eb; text-decoration: underline; text-underline-offset: 2px; }
+.dark .article-content a { color: #38bdf8; }
+.article-content strong { font-weight: 700; color: inherit; }
+.article-content hr { border: 0; border-top: 1px solid #e2e8f0; margin: 2em 0; }
+.dark .article-content hr { border-color: #1e293b; }
+.article-content blockquote { border-left: 4px solid #3b82f6; padding-left: 1rem; font-style: italic; color: #475569; }
+.dark .article-content blockquote { color: #94a3b8; }
+.article-content code { background: #f1f5f9; color: #2563eb; padding: .1rem .4rem; border-radius: .375rem; font-size: .9em; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.dark .article-content code { background: rgba(30,41,59,.6); color: #7dd3fc; }
+.article-content pre { background: #0f172a; color: #f1f5f9; padding: 1rem; border-radius: .75rem; overflow-x: auto; border: 1px solid #1e293b; }
+.article-content pre code { background: transparent; color: inherit; padding: 0; }
+.article-content img { max-width: 100%; height: auto; border-radius: .75rem; }
+.article-content table { width: 100%; border-collapse: collapse; display: block; overflow-x: auto; }
+.article-content th, .article-content td { border: 1px solid #e2e8f0; padding: .6rem .8rem; text-align: left; }
+.dark .article-content th, .dark .article-content td { border-color: #334155; }
+.article-content th { background: #f1f5f9; font-weight: 700; color: #0f172a; }
+.dark .article-content th { background: rgba(30,41,59,.8); color: #fff; }
