@@ -30,6 +30,8 @@ function AppContent() {
   const [tools, setTools] = useState<Tool[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [dataLoaded, setDataLoaded] = useState(false);
+  // True only when content was actually fetched. If the API fetch fails we must NOT mark pages as noindex.
+  const [dataOk, setDataOk] = useState(false);
   const [siteSettings, setSiteSettings] = useState<Partial<SiteSettings>>({});
 
   const loadData = async () => {
@@ -50,6 +52,7 @@ function AppContent() {
       const cats = await asArray<Category>(catRes);
       const tls = await asArray<Tool>(toolsRes);
       const arts = await asArray<Article>(articlesRes);
+      if (cats && arts) setDataOk(true);
       if (cats) setCategories(cats);
       if (tls) setTools(tls);
       if (arts) setArticles(arts);
@@ -117,8 +120,7 @@ function AppContent() {
         description = found.metaDescription || found.excerpt || defaultDesc;
         image = found.featuredImage || defaultImage;
         type = 'article';
-      } else if (dataLoaded && articles.length > 0) {
-        // Only mark as not-found when the article list really loaded (an empty list means the fetch failed)
+      } else if (dataLoaded && dataOk) {
         title = 'Article Not Found | AINOVEX';
         noindex = true;
       }
@@ -131,7 +133,7 @@ function AppContent() {
       if (found) {
         title = `${found.name} AI Tools & Guides | AINOVEX`;
         description = found.description || defaultDesc;
-      } else if (dataLoaded && categories.length > 0) {
+      } else if (dataLoaded && dataOk) {
         title = 'Category Not Found | AINOVEX';
         noindex = true;
       }
@@ -156,7 +158,7 @@ function AppContent() {
     }
 
     applySeo({ title, description, path: currentPath, baseUrl: base, image, noindex, type });
-  }, [currentPath, articles, categories, siteSettings, dataLoaded]);
+  }, [currentPath, articles, categories, siteSettings, dataLoaded, dataOk]);
 
   // Public View Router
   let viewContent: React.ReactNode = null;

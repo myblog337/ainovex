@@ -150,7 +150,7 @@ app.get('/sitemap.xml', (_req: Request, res: Response) => {
 app.get('/robots.txt', (_req: Request, res: Response) => {
   const settings = readJsonFile<any>(SETTINGS_JSON, {});
   const baseUrl = settings.productionUrl || 'https://ainovex.pages.dev';
-  const content = `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
+  const content = `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
   res.header('Content-Type', 'text/plain');
   res.send(content);
 });

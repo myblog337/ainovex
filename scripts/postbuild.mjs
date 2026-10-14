@@ -76,7 +76,7 @@ fs.writeFileSync(path.join(dist, 'rss.xml'), rss);
 // ---- robots.txt uses the configured domain
 fs.writeFileSync(
   path.join(dist, 'robots.txt'),
-  `User-agent: *\nAllow: /\nDisallow: /api/\n\nSitemap: ${baseUrl}/sitemap.xml\n`
+  `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`
 );
 
 // ---- ads.txt only when a real publisher id is configured
