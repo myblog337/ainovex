@@ -117,7 +117,8 @@ function AppContent() {
         description = found.metaDescription || found.excerpt || defaultDesc;
         image = found.featuredImage || defaultImage;
         type = 'article';
-      } else if (dataLoaded) {
+      } else if (dataLoaded && articles.length > 0) {
+        // Only mark as not-found when the article list really loaded (an empty list means the fetch failed)
         title = 'Article Not Found | AINOVEX';
         noindex = true;
       }
@@ -130,7 +131,7 @@ function AppContent() {
       if (found) {
         title = `${found.name} AI Tools & Guides | AINOVEX`;
         description = found.description || defaultDesc;
-      } else if (dataLoaded) {
+      } else if (dataLoaded && categories.length > 0) {
         title = 'Category Not Found | AINOVEX';
         noindex = true;
       }
