@@ -1,0 +1,8 @@
+# AINOVEX
+
+> AINOVEX is a website with free AI tools and blog articles about AI.
+
+## Main Pages
+
+- [Home](https://ainovex.pages.dev/): Main page with AI tools and latest articles
+- [Sitemap](https://ainovex.pages.dev/sitemap.xml): Full list of pages on the site
