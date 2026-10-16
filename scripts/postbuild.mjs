@@ -50,6 +50,29 @@ for (const a of articles) {
   }
 }
 
+// ---- static API snapshots (used by Netlify redirects: /api/* -> dist/api/*.json)
+// Cloudflare Pages keeps serving /api/* from functions/; these files are simply unused there.
+const apiDir = path.join(dist, 'api');
+fs.mkdirSync(path.join(apiDir, 'articles'), { recursive: true });
+const writeApi = (rel, d) => {
+  const f = path.join(apiDir, rel);
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  fs.writeFileSync(f, JSON.stringify(d));
+};
+writeApi('categories.json', categories);
+writeApi('tools.json', tools);
+writeApi('settings.json', settings);
+writeApi('ads.json', { ...ads, adsTxtContent: undefined });
+writeApi('health.json', { status: 'ok', platform: 'static' });
+writeApi('articles/index.json', articles);
+const SAFE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+for (const a of articles) {
+  if (!SAFE_SLUG.test(a.slug)) continue;
+  const mdFile = path.join(contentDst, 'articles', `${a.slug}.md`);
+  const content = fs.existsSync(mdFile) ? fs.readFileSync(mdFile, 'utf-8') : '';
+  writeApi(`articles/${a.slug}/index.json`, { ...a, content });
+}
+
 // ---- sitemap.xml
 const today = new Date().toISOString().slice(0, 10);
 const staticRoutes = [
