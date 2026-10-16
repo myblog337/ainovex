@@ -4,5 +4,5 @@
 
 ## Main Pages
 
-- [Home](https://ainovex.pages.dev/): Main page with AI tools and latest articles
-- [Sitemap](https://ainovex.pages.dev/sitemap.xml): Full list of pages on the site
+- [Home](https://ai-novex.netlify.app/): Main page with AI tools and latest articles
+- [Sitemap](https://ai-novex.netlify.app/sitemap.xml): Full list of pages on the site

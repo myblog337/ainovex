@@ -31,7 +31,7 @@ const tools = readJson('tools.json', []);
 const ads = readJson('ads.json', {});
 const allArticles = readJson('articles.json', []);
 const articles = allArticles.filter((a) => a.isPublished);
-const baseUrl = (settings.productionUrl || 'https://ainovex.pages.dev').replace(/\/+$/, '');
+const baseUrl = (settings.productionUrl || 'https://ai-novex.netlify.app').replace(/\/+$/, '');
 
 fs.mkdirSync(path.join(contentDst, 'articles'), { recursive: true });
 const writeJson = (f, d) => fs.writeFileSync(path.join(contentDst, f), JSON.stringify(d));

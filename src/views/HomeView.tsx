@@ -27,7 +27,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'AINOVEX',
-    url: 'https://ainovex.pages.dev/',
+    url: 'https://ai-novex.netlify.app/',
     description: 'AINOVEX brings you the latest AI tools, helpful guides, tech news and insights.',
     author: {
       '@type': 'Person',
@@ -35,7 +35,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://ainovex.pages.dev/tools?q={search_term_string}',
+      target: 'https://ai-novex.netlify.app/tools?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };

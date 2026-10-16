@@ -93,7 +93,7 @@ function AppContent() {
 
   // Keep <title>, description, canonical and Open Graph tags in sync with the route
   useEffect(() => {
-    const base = siteSettings.productionUrl || 'https://ainovex.pages.dev';
+    const base = siteSettings.productionUrl || 'https://ai-novex.netlify.app';
     const defaultDesc =
       siteSettings.siteDescription ||
       'AINOVEX brings you the latest AI tools, helpful guides, tech news and insights.';

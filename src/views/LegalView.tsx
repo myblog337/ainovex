@@ -40,7 +40,7 @@ export const LegalView: React.FC<LegalViewProps> = ({ page, onNavigate }) => {
             <section>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">1. Introduction</h2>
               <p>
-                At AINOVEX (accessible from https://ainovex.pages.dev), the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of information collected and how it is used.
+                At AINOVEX (accessible from https://ai-novex.netlify.app), the privacy of our visitors is of paramount importance. This Privacy Policy document outlines the types of information collected and how it is used.
               </p>
             </section>
             <section>

@@ -106,8 +106,8 @@ app.get('/api/articles/:slug', (req: Request, res: Response) => {
 app.get('/sitemap.xml', (_req: Request, res: Response) => {
   const articles = readJsonFile<any[]>(ARTICLES_JSON, []).filter(a => a.isPublished);
   const categories = readJsonFile<any[]>(CATEGORIES_JSON, []);
-  const settings = readJsonFile<any>(SETTINGS_JSON, { productionUrl: 'https://ainovex.pages.dev' });
-  const baseUrl = settings.productionUrl || 'https://ainovex.pages.dev';
+  const settings = readJsonFile<any>(SETTINGS_JSON, { productionUrl: 'https://ai-novex.netlify.app' });
+  const baseUrl = settings.productionUrl || 'https://ai-novex.netlify.app';
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
@@ -149,7 +149,7 @@ app.get('/sitemap.xml', (_req: Request, res: Response) => {
 // Dynamic robots.txt
 app.get('/robots.txt', (_req: Request, res: Response) => {
   const settings = readJsonFile<any>(SETTINGS_JSON, {});
-  const baseUrl = settings.productionUrl || 'https://ainovex.pages.dev';
+  const baseUrl = settings.productionUrl || 'https://ai-novex.netlify.app';
   const content = `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
   res.header('Content-Type', 'text/plain');
   res.send(content);
@@ -158,7 +158,7 @@ app.get('/robots.txt', (_req: Request, res: Response) => {
 // RSS feed (the footer links to /rss.xml)
 app.get('/rss.xml', (_req: Request, res: Response) => {
   const settings = readJsonFile<any>(SETTINGS_JSON, {});
-  const baseUrl = settings.productionUrl || 'https://ainovex.pages.dev';
+  const baseUrl = settings.productionUrl || 'https://ai-novex.netlify.app';
   const articles = readJsonFile<any[]>(ARTICLES_JSON, [])
     .filter(a => a.isPublished)
     .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));

@@ -95,12 +95,12 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
       name: 'AINOVEX',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://ainovex.pages.dev/favicon.svg',
+        url: 'https://ai-novex.netlify.app/favicon.svg',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://ainovex.pages.dev/blog/${article.slug}`,
+      '@id': `https://ai-novex.netlify.app/blog/${article.slug}`,
     },
   };
 
