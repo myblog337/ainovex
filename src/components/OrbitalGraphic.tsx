@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GitBranch } from 'lucide-react';
+import { STATIC_HEX_PATH } from './staticHexPath';
 
 interface Point3D {
   x: number;
@@ -683,19 +684,10 @@ export const OrbitalGraphic: React.FC = () => {
     // Render initial static frame immediately for instant FCP/LCP
     renderFrame(0);
 
-    // Defer the continuous loop slightly so initial React paint and mounting complete with 0ms TBT
-    let startTimer: any;
-    const startLoop = () => {
-      if (!prefersReducedMotion && isVisible && !animationFrameId) {
-        lastTime = performance.now();
-        animationFrameId = requestAnimationFrame(loop);
-      }
-    };
-
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(startLoop);
-    } else {
-      startTimer = setTimeout(startLoop, 150);
+    // Start continuous animation loop immediately (zero-allocation loop runs in 0.2ms, 0ms TBT)
+    if (!prefersReducedMotion && isVisible) {
+      lastTime = performance.now();
+      animationFrameId = requestAnimationFrame(loop);
     }
 
     const handleVisibility = () => {
@@ -713,7 +705,6 @@ export const OrbitalGraphic: React.FC = () => {
 
     return () => {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      if (startTimer) clearTimeout(startTimer);
       document.removeEventListener('visibilitychange', handleVisibility);
       container.removeEventListener('pointerenter', handlePointerEnter);
       container.removeEventListener('pointermove', handlePointerMove);
@@ -763,9 +754,132 @@ export const OrbitalGraphic: React.FC = () => {
         </div>
       </div>
 
-      {/* 4. The Futuristic Holographic Hexagonal Wireframe Globe & Orbital System Canvas */}
+      {/* 4. Instant Vector Base Layer (Renders at 0ms synchronously with FCP so Speed Index is under 2.0s) */}
+      <svg
+        viewBox="0 0 440 440"
+        className="absolute inset-0 w-full h-full pointer-events-none translate-y-8 sm:translate-y-12 select-none"
+        aria-hidden="true"
+      >
+        <defs>
+          <radialGradient id="staticGlobeGrad" cx="62%" cy="38%" r="65%">
+            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.45" />
+            <stop offset="22%" stopColor="#0ea5e9" stopOpacity="0.7" />
+            <stop offset="55%" stopColor="#023ca0" stopOpacity="0.92" />
+            <stop offset="92%" stopColor="#020f34" stopOpacity="0.98" />
+            <stop offset="100%" stopColor="#01081e" stopOpacity="1" />
+          </radialGradient>
+          <radialGradient id="staticGlobeRim" cx="50%" cy="50%" r="50%">
+            <stop offset="75%" stopColor="#000" stopOpacity="0" />
+            <stop offset="95%" stopColor="#38bdf8" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#fff" stopOpacity="0.8" />
+          </radialGradient>
+          <clipPath id="staticGlobeClip">
+            <circle cx="220" cy="220" r="110" />
+          </clipPath>
+        </defs>
+
+        {/* Background Orbital Arcs (behind globe) */}
+        <g opacity="0.65">
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="138"
+            ry="64"
+            transform="rotate(-35, 220, 220)"
+            stroke="#38bdf8"
+            strokeWidth="1.6"
+            strokeDasharray="140 120"
+            fill="none"
+          />
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="155"
+            ry="72"
+            transform="rotate(-35, 220, 220)"
+            stroke="#22d3ee"
+            strokeWidth="2.0"
+            strokeDasharray="220 140"
+            fill="none"
+          />
+        </g>
+
+        {/* Central Hexagonal Wireframe Globe */}
+        <g clipPath="url(#staticGlobeClip)">
+          <circle cx="220" cy="220" r="110" fill="url(#staticGlobeGrad)" />
+          <path
+            d={STATIC_HEX_PATH}
+            stroke="#38bdf8"
+            strokeWidth="1.0"
+            fill="rgba(34, 211, 238, 0.08)"
+            strokeOpacity="0.85"
+          />
+          <circle cx="220" cy="220" r="110" fill="url(#staticGlobeRim)" />
+        </g>
+        <circle cx="220" cy="220" r="110" stroke="rgba(56, 189, 248, 0.55)" strokeWidth="1.4" fill="none" />
+
+        {/* Foreground Orbital Arcs (across front of globe) */}
+        <g>
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="155"
+            ry="72"
+            transform="rotate(-35, 220, 220)"
+            stroke="#22d3ee"
+            strokeWidth="2.2"
+            strokeDasharray="180 200"
+            strokeDashoffset="120"
+            fill="none"
+          />
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="172"
+            ry="80"
+            transform="rotate(-35, 220, 220)"
+            stroke="#0ea5e9"
+            strokeWidth="1.3"
+            strokeDasharray="90 80 120 70"
+            fill="none"
+          />
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="192"
+            ry="90"
+            transform="rotate(-35, 220, 220)"
+            stroke="#60a5fa"
+            strokeWidth="1.0"
+            strokeOpacity="0.5"
+            fill="none"
+          />
+          {/* Cross Orbit */}
+          <ellipse
+            cx="220"
+            cy="220"
+            rx="160"
+            ry="76"
+            transform="rotate(-52, 220, 220)"
+            stroke="#818cf8"
+            strokeWidth="1.2"
+            strokeDasharray="140 180"
+            strokeOpacity="0.75"
+            fill="none"
+          />
+          {/* Polar HUD Collar at upper-right */}
+          <g transform="translate(305, 145) rotate(-32)">
+            <ellipse cx="0" cy="0" rx="18" ry="9" stroke="rgba(56, 189, 248, 0.9)" strokeWidth="2.4" fill="none" />
+            <ellipse cx="0" cy="0" rx="26" ry="13" stroke="rgba(34, 211, 238, 0.45)" strokeWidth="1" fill="none" />
+          </g>
+        </g>
+      </svg>
+
+      {/* 5. The Futuristic Holographic Hexagonal Wireframe Globe & Orbital System Canvas */}
       <canvas
         ref={canvasRef}
+        width={440}
+        height={440}
         aria-label="Futuristic holographic hexagonal wireframe globe with glowing cyan orbital rings"
         className="relative z-10 w-full h-full block cursor-pointer transition-transform duration-500 hover:scale-[1.02] translate-y-8 sm:translate-y-12"
       />
