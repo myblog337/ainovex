@@ -107,4 +107,29 @@ if (ads.enabled && ads.adsTxtContent && !/pub-X+/i.test(ads.adsTxtContent)) {
   fs.writeFileSync(path.join(dist, 'ads.txt'), ads.adsTxtContent);
 }
 
+// ---- Inline the main stylesheet into index.html (removes one render-blocking round trip -> faster FCP)
+// Safe fallback: if anything looks unusual the <link> is left untouched.
+try {
+  const indexPath = path.join(dist, 'index.html');
+  let html = fs.readFileSync(indexPath, 'utf-8');
+  let inlinedBytes = 0;
+  html = html.replace(/<link\b[^>]*>/gi, (tag) => {
+    if (!/\brel=["']stylesheet["']/i.test(tag)) return tag;
+    const m = tag.match(/\bhref=["'](\/assets\/[^"']+\.css)["']/i);
+    if (!m) return tag;
+    const cssFile = path.join(dist, m[1]);
+    if (!fs.existsSync(cssFile)) return tag;
+    const css = fs.readFileSync(cssFile, 'utf-8');
+    if (css.length > 120 * 1024 || /<\/style/i.test(css)) return tag;
+    inlinedBytes += css.length;
+    return `<style>${css.replace(/\/\*# sourceMappingURL=[^*]*\*\//g, '')}</style>`;
+  });
+  if (inlinedBytes) {
+    fs.writeFileSync(indexPath, html);
+    console.log(`[postbuild] inlined ${(inlinedBytes / 1024).toFixed(1)} KB of CSS into index.html`);
+  }
+} catch (err) {
+  console.warn('[postbuild] CSS inlining skipped:', err.message);
+}
+
 console.log(`[postbuild] ${articles.length} articles, ${categories.length} categories, ${tools.length} tools exported.`);
