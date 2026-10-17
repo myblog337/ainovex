@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
-import { SearchModal } from './components/SearchModal';
 import { HomeView } from './views/HomeView';
-import { ToolsView } from './views/ToolsView';
-import { BlogView } from './views/BlogView';
-import { ArticleDetailView } from './views/ArticleDetailView';
-import { CategoriesView } from './views/CategoriesView';
-import { CategoryDetailView } from './views/CategoryDetailView';
-import { AboutView } from './views/AboutView';
-import { ContactView } from './views/ContactView';
-import { LegalView } from './views/LegalView';
 import { Tool, Category, Article, SiteSettings } from './types';
 import { applySeo, loadAnalytics } from './utils/seo';
+
+// Code-splitting: only the home page is in the first bundle; other pages load on demand.
+const ToolsView = lazy(() => import('./views/ToolsView').then((m) => ({ default: m.ToolsView })));
+const BlogView = lazy(() => import('./views/BlogView').then((m) => ({ default: m.BlogView })));
+const ArticleDetailView = lazy(() => import('./views/ArticleDetailView').then((m) => ({ default: m.ArticleDetailView })));
+const CategoriesView = lazy(() => import('./views/CategoriesView').then((m) => ({ default: m.CategoriesView })));
+const CategoryDetailView = lazy(() => import('./views/CategoryDetailView').then((m) => ({ default: m.CategoryDetailView })));
+const AboutView = lazy(() => import('./views/AboutView').then((m) => ({ default: m.AboutView })));
+const ContactView = lazy(() => import('./views/ContactView').then((m) => ({ default: m.ContactView })));
+const LegalView = lazy(() => import('./views/LegalView').then((m) => ({ default: m.LegalView })));
+const SearchModal = lazy(() => import('./components/SearchModal').then((m) => ({ default: m.SearchModal })));
 
 function AppContent() {
   // Navigation route state
@@ -263,12 +265,16 @@ function AppContent() {
         onNavigate={navigate}
       />
 
-      <main className="flex-1">{viewContent}</main>
+      <main className="flex-1">
+        <Suspense fallback={<div className="min-h-[60vh]" aria-hidden="true" />}>{viewContent}</Suspense>
+      </main>
 
       <Footer onNavigate={navigate} />
 
       {/* Global Quick Search Dialog */}
-      <SearchModal
+      {isSearchOpen && (
+        <Suspense fallback={null}>
+        <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
         tools={tools}
@@ -290,6 +296,8 @@ function AppContent() {
           navigate(`/category/${slug}`);
         }}
       />
+        </Suspense>
+      )}
     </div>
   );
 }

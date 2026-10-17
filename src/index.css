@@ -195,3 +195,31 @@ html.light {
 .dark .article-content th, .dark .article-content td { border-color: #334155; }
 .article-content th { background: #f1f5f9; font-weight: 700; color: #0f172a; }
 .dark .article-content th { background: rgba(30,41,59,.8); color: #fff; }
+
+
+/* ---------- Mobile performance ----------
+   On phones, the glow pulses animated `filter` / `box-shadow`, which repaints every frame.
+   Keep the motion (transform only) and show the glow as a static effect instead. */
+@media (max-width: 768px) {
+  @keyframes corePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+  @keyframes starFlare {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.18) rotate(15deg); }
+  }
+  @keyframes aiCorePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  @keyframes holographicOrb {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .animate-core-pulse { box-shadow: 0 0 45px rgba(56, 189, 248, 0.6), 0 0 80px rgba(139, 92, 246, 0.35); }
+  .animate-star-flare { filter: drop-shadow(0 0 12px #38bdf8) drop-shadow(0 0 22px #818cf8); }
+  .animate-ai-core { filter: drop-shadow(0 0 18px #38bdf8) drop-shadow(0 0 30px #a855f7); }
+  /* SVG stroke-dashoffset animation can't run on the compositor; keep the dashes static on phones. */
+  .animate-circuit-flow { animation: none; }
+}
