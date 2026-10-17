@@ -17,6 +17,11 @@ const ContactView = lazy(() => import('./views/ContactView').then((m) => ({ defa
 const LegalView = lazy(() => import('./views/LegalView').then((m) => ({ default: m.LegalView })));
 const SearchModal = lazy(() => import('./components/SearchModal').then((m) => ({ default: m.SearchModal })));
 
+import defaultCategories from '../content/categories.json';
+import defaultTools from '../content/tools.json';
+import defaultArticles from '../content/articles.json';
+import defaultSettings from '../content/settings.json';
+
 function AppContent() {
   // Navigation route state
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -27,14 +32,15 @@ function AppContent() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedToolModal, setSelectedToolModal] = useState<Tool | null>(null);
 
-  // Content Data
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [tools, setTools] = useState<Tool[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
-  // True only when content was actually fetched. If the API fetch fails we must NOT mark pages as noindex.
-  const [dataOk, setDataOk] = useState(false);
-  const [siteSettings, setSiteSettings] = useState<Partial<SiteSettings>>({});
+  // Content Data: Pre-populated with static content for instant initial paint
+  const [categories, setCategories] = useState<Category[]>(defaultCategories as Category[]);
+  const [tools, setTools] = useState<Tool[]>(defaultTools as Tool[]);
+  const [articles, setArticles] = useState<Article[]>(
+    (defaultArticles as Article[]).filter((a) => a.isPublished)
+  );
+  const [dataLoaded, setDataLoaded] = useState(true);
+  const [dataOk, setDataOk] = useState(true);
+  const [siteSettings, setSiteSettings] = useState<Partial<SiteSettings>>(defaultSettings);
 
   const loadData = async () => {
     try {
@@ -45,7 +51,6 @@ function AppContent() {
         fetch('/api/settings'),
       ]);
 
-      // Only accept arrays — a non-array response used to crash the whole app on .map()
       const asArray = async <T,>(res: Response): Promise<T[] | null> => {
         if (!res.ok) return null;
         const data = await res.json();
@@ -66,14 +71,21 @@ function AppContent() {
         }
       }
     } catch (err) {
-      console.error('Failed to load initial data:', err);
-    } finally {
-      setDataLoaded(true);
+      console.error('Failed to load updated data:', err);
     }
   };
 
   useEffect(() => {
-    loadData();
+    // Run background revalidation during browser idle time so main thread is not blocked
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(() => {
+        loadData();
+      });
+    } else {
+      setTimeout(() => {
+        loadData();
+      }, 600);
+    }
   }, []);
 
   useEffect(() => {
