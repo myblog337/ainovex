@@ -223,3 +223,14 @@ html.light {
   /* SVG stroke-dashoffset animation can't run on the compositor; keep the dashes static on phones. */
   .animate-circuit-flow { animation: none; }
 }
+
+
+/* ---------- Mobile speed: lighter hero graphic (remove this block to restore the full effects) ----------
+   Large blurs, backdrop-filters and many looping animations are expensive to paint on phones and
+   delay the moment the hero looks finished (Speed Index). Layout and colours stay the same. */
+@media (max-width: 768px) {
+  .orbital-graphic .blur-3xl { filter: blur(20px); animation: none; }
+  .orbital-graphic [class*="backdrop-blur"] { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .orbital-graphic .animate-ping,
+  .orbital-graphic .animate-wave-pulse { animation: none; }
+}

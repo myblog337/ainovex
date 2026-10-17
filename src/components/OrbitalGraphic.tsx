@@ -7,7 +7,7 @@ export const OrbitalGraphic: React.FC = () => {
 
   return (
     <div 
-      className="relative w-full max-w-[430px] sm:max-w-[480px] mx-auto aspect-square flex items-center justify-center my-4 select-none"
+      className="orbital-graphic relative w-full max-w-[430px] sm:max-w-[480px] mx-auto aspect-square flex items-center justify-center my-4 select-none"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
