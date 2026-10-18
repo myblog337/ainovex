@@ -27,13 +27,17 @@ export const FeaturedTools: React.FC<FeaturedToolsProps> = ({
             Handpicked top AI tools to help you work faster, create better and achieve more.
           </p>
         </div>
-        <button
-          onClick={onViewAll}
+        <a
+          href="/tools"
+          onClick={(e) => {
+            e.preventDefault();
+            onViewAll();
+          }}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors group self-start sm:self-auto cursor-pointer"
         >
           <span>View All Tools</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-        </button>
+        </a>
       </div>
 
       {/* Grid of Featured Tool Cards */}

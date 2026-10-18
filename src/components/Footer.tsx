@@ -44,8 +44,12 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 mb-14">
           {/* Brand Info */}
           <div className="lg:col-span-4">
-            <div 
-              onClick={() => onNavigate('/')}
+            <a 
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/');
+              }}
               className="cursor-pointer inline-flex flex-col mb-4 select-none"
             >
               <div className="flex items-center gap-1 text-2xl font-black tracking-tight">
@@ -59,7 +63,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="text-[10px] tracking-wider font-medium text-slate-500 dark:text-slate-400 -mt-0.5">
                 AI Tools • News • Guides • More
               </span>
-            </div>
+            </a>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
               AINOVEX is your trusted source for the best AI tools, latest news, and helpful guides. Boost your productivity, creativity and work smarter with the power of AI.
@@ -74,12 +78,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-2.5 text-xs sm:text-sm">
               {quickLinks.map((item) => (
                 <li key={item.path}>
-                  <button
-                    onClick={() => onNavigate(item.path)}
-                    className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                  <a
+                    href={item.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onNavigate(item.path);
+                    }}
+                    className="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors cursor-pointer block"
                   >
                     {item.label}
-                  </button>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -92,13 +100,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </h4>
             <div className="grid grid-cols-2 gap-x-2 gap-y-2.5 text-xs sm:text-sm">
               {popularCategories.map((cat) => (
-                <button
+                <a
                   key={cat.slug}
-                  onClick={() => onNavigate(`/category/${cat.slug}`)}
-                  className="text-left text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors truncate cursor-pointer"
+                  href={`/category/${cat.slug}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate(`/category/${cat.slug}`);
+                  }}
+                  className="text-left text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors truncate cursor-pointer block"
                 >
                   {cat.label}
-                </button>
+                </a>
               ))}
             </div>
           </div>
@@ -166,30 +178,46 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <p>© 2026 AINOVEX. All rights reserved.</p>
 
           <div className="flex flex-wrap items-center gap-5">
-            <button
-              onClick={() => onNavigate('/privacy')}
+            <a
+              href="/privacy"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/privacy');
+              }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Privacy Policy
-            </button>
-            <button
-              onClick={() => onNavigate('/terms')}
+            </a>
+            <a
+              href="/terms"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/terms');
+              }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Terms of Service
-            </button>
-            <button
-              onClick={() => onNavigate('/editorial-policy')}
+            </a>
+            <a
+              href="/editorial-policy"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/editorial-policy');
+              }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Editorial Policy
-            </button>
-            <button
-              onClick={() => onNavigate('/affiliate-disclosure')}
+            </a>
+            <a
+              href="/affiliate-disclosure"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('/affiliate-disclosure');
+              }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Disclaimer
-            </button>
+            </a>
           </div>
         </div>
       </div>

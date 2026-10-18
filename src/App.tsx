@@ -119,13 +119,14 @@ function AppContent() {
     let type: 'website' | 'article' = 'website';
 
     if (currentPath === '/') {
-      // defaults above
+      title = 'AINOVEX - AI Tools & Technology Platform';
+      description = 'Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.';
     } else if (currentPath === '/tools' || currentPath.startsWith('/tools?')) {
-      title = 'AI Tools Directory & Software Reviews | AINOVEX';
-      description = 'Browse and compare AI tools for writing, images, video, coding and productivity.';
+      title = 'Best AI Tools Directory & Software Reviews 2026 | AINOVEX';
+      description = 'Browse and compare the top artificial intelligence tools for writing, image creation, video, coding, and productivity. Find the best software for your needs.';
     } else if (currentPath === '/blog') {
       title = 'AI Insights, Tutorials & Technology Guides | AINOVEX';
-      description = 'Practical AI tutorials, tool comparisons and technology guides from the AINOVEX editorial team.';
+      description = 'Explore actionable AI tutorials, practical workflows, tool comparisons, and tech guides from the AINOVEX editorial team. Master modern AI applications today.';
     } else if (currentPath.startsWith('/blog/')) {
       const slug = currentPath.replace('/blog/', '');
       const found = articles.find((a) => a.slug === slug);
@@ -140,34 +141,40 @@ function AppContent() {
       }
     } else if (currentPath === '/categories') {
       title = 'Browse AI Categories & Topics | AINOVEX';
-      description = 'Explore AI tools and guides by category.';
+      description = 'Explore specialized AI software categories from writing and image generation to coding and productivity. Find the right tools for your specific workflow.';
     } else if (currentPath.startsWith('/category/')) {
       const slug = currentPath.replace('/category/', '');
       const found = categories.find((c) => c.slug === slug);
       if (found) {
-        title = `${found.name} AI Tools & Guides | AINOVEX`;
-        description = found.description || defaultDesc;
+        title = `${found.name} AI Tools & Practical Guides 2026 | AINOVEX`;
+        const baseCatDesc = found.description || 'Explore the best artificial intelligence tools and workflows.';
+        description = `${baseCatDesc} Browse handpicked software reviews, features, and expert tutorials on AINOVEX.`;
       } else if (dataLoaded && dataOk) {
         title = 'Category Not Found | AINOVEX';
         noindex = true;
       }
     } else if (currentPath === '/about') {
       title = 'About Us & Editorial Standards | AINOVEX';
-      description = 'Learn who is behind AINOVEX and how we research and review AI tools.';
+      description = 'Learn about AINOVEX, our mission to simplify artificial intelligence, our rigorous testing standards, and our independent editorial review methodology.';
     } else if (currentPath === '/contact') {
-      title = 'Contact AINOVEX | Editorial Team';
-      description = 'Send tool submissions, corrections or partnership enquiries to the AINOVEX editorial team.';
+      title = 'Contact AINOVEX | Editorial & Support Team';
+      description = 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or media and partnership inquiries.';
     } else if (currentPath === '/privacy') {
-      title = 'Privacy Policy | AINOVEX';
+      title = 'Privacy Policy | AINOVEX AI Platform';
+      description = 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain strict data privacy.';
     } else if (currentPath === '/terms') {
-      title = 'Terms of Service | AINOVEX';
+      title = 'Terms of Service | AINOVEX Platform';
+      description = 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website and directory.';
     } else if (currentPath === '/editorial-policy') {
-      title = 'Editorial Policy | AINOVEX';
+      title = 'Editorial Policy & Review Standards | AINOVEX';
+      description = 'Explore AINOVEX strict editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.';
     } else if (currentPath === '/affiliate-disclosure') {
-      title = 'Affiliate Disclosure | AINOVEX';
+      title = 'Affiliate & Monetization Disclosure | AINOVEX';
+      description = 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and editorial integrity.';
     } else {
       // Unknown route: the SPA still answers HTTP 200, so tell crawlers not to index it.
       title = 'Page Not Found | AINOVEX';
+      description = 'The page you are looking for does not exist. Browse our AI tools directory, tutorials, and category archives on AINOVEX.';
       noindex = true;
     }
 

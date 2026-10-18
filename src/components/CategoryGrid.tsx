@@ -57,13 +57,17 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
             Browse by Category
           </h2>
         </div>
-        <button
-          onClick={onViewAll}
+        <a
+          href="/categories"
+          onClick={(e) => {
+            e.preventDefault();
+            onViewAll();
+          }}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors group cursor-pointer"
         >
           <span>View All Categories</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-        </button>
+        </a>
       </div>
 
       {/* Grid of Categories */}
@@ -74,9 +78,13 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           const iconContainerClass = bgMap[iconKey] || bgMap.LayoutGrid;
 
           return (
-            <button
+            <a
               key={cat.id || cat.slug}
-              onClick={() => onSelectCategory(cat.slug)}
+              href={`/category/${cat.slug}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectCategory(cat.slug);
+              }}
               className="flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 hover:border-blue-500/50 hover:bg-slate-50/80 shadow-sm hover:shadow-md dark:bg-slate-900/60 dark:border-slate-800/80 dark:hover:bg-slate-850/80 transition-all duration-200 hover:-translate-y-0.5 text-center group cursor-pointer"
             >
               <div
@@ -87,7 +95,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
               <span className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                 {cat.name}
               </span>
-            </button>
+            </a>
           );
         })}
       </div>

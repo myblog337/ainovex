@@ -1,6 +1,6 @@
 {
   "name": "AINOVEX - AI Tools & Technology Platform",
-  "description": "AINOVEX brings you the latest AI tools, helpful guides, tech news and insights.",
+  "description": "Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

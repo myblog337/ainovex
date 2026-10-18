@@ -55,10 +55,14 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
           const icon = iconMap[cat.icon] || iconMap.LayoutGrid;
 
           return (
-            <div
+            <a
               key={cat.id || cat.slug}
-              onClick={() => onSelectCategory(cat.slug)}
-              className="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer group flex flex-col justify-between"
+              href={`/category/${cat.slug}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectCategory(cat.slug);
+              }}
+              className="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer group flex flex-col justify-between block"
             >
               <div>
                 <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800/80 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
@@ -78,7 +82,7 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
                 <span>Browse {cat.name}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
-            </div>
+            </a>
           );
         })}
       </div>

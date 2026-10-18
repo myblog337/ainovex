@@ -64,12 +64,16 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Article Not Found</h2>
         <p className="text-sm text-slate-400 mb-6">The requested article could not be located.</p>
-        <button
-          onClick={() => onNavigate('/blog')}
-          className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500"
+        <a
+          href="/blog"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate('/blog');
+          }}
+          className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 inline-block"
         >
           Return to Blog Archive
-        </button>
+        </a>
       </div>
     );
   }
@@ -119,9 +123,16 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
 
       {/* Header */}
       <div className="py-6 border-b border-slate-200 dark:border-slate-800/80 mb-8">
-        <div className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-600/20 dark:text-blue-400 dark:border-blue-500/30 mb-4">
+        <a
+          href={`/category/${article.category}`}
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate(`/category/${article.category}`);
+          }}
+          className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-600/20 dark:text-blue-400 dark:border-blue-500/30 mb-4 hover:bg-blue-100 transition-colors"
+        >
           {article.categoryName || article.category}
-        </div>
+        </a>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
           {article.title}
@@ -189,7 +200,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
           {article.tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/80 dark:text-slate-300 dark:border-slate-700/60"
+              className="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800/80 dark:text-slate-300 dark:border-slate-700/50"
             >
               #{tag}
             </span>
@@ -221,10 +232,14 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {related.map((r) => (
-              <div
+              <a
                 key={r.slug}
-                onClick={() => onNavigate(`/blog/${r.slug}`)}
-                className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md cursor-pointer group transition-all"
+                href={`/blog/${r.slug}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate(`/blog/${r.slug}`);
+                }}
+                className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md cursor-pointer group transition-all block"
               >
                 <div className="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-2">
                   {r.categoryName || r.category}
@@ -233,7 +248,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
                   {r.title}
                 </h4>
                 <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">{r.excerpt}</p>
-              </div>
+              </a>
             ))}
           </div>
         </div>

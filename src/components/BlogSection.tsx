@@ -30,13 +30,17 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
             Stay updated with the latest AI news, tips, tutorials and industry trends.
           </p>
         </div>
-        <button
-          onClick={onViewAll}
+        <a
+          href="/blog"
+          onClick={(e) => {
+            e.preventDefault();
+            onViewAll();
+          }}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors group self-start sm:self-auto cursor-pointer"
         >
           <span>View All Articles</span>
           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-        </button>
+        </a>
       </div>
 
       {publishedArticles.length === 0 ? (
@@ -59,28 +63,40 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={onExploreTools}
+            <a
+              href="/tools"
+              onClick={(e) => {
+                e.preventDefault();
+                onExploreTools();
+              }}
               className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all hover:scale-[1.02] cursor-pointer"
             >
               Explore AI Tools Directory
-            </button>
-            <button
-              onClick={onViewAll}
+            </a>
+            <a
+              href="/blog"
+              onClick={(e) => {
+                e.preventDefault();
+                onViewAll();
+              }}
               className="px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold text-slate-700 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition-all cursor-pointer"
             >
               View Blog Archive
-            </button>
+            </a>
           </div>
         </div>
       ) : (
         /* Grid of Published Articles */
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {publishedArticles.slice(0, 3).map((article) => (
-            <article
+            <a
               key={article.id || article.slug}
-              onClick={() => onSelectArticle(article.slug)}
-              className="group flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 overflow-hidden hover:border-blue-500/40 hover:shadow-xl shadow-sm dark:bg-slate-900/60 dark:border-slate-800/80 transition-all duration-200 hover:-translate-y-1 cursor-pointer"
+              href={`/blog/${article.slug}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectArticle(article.slug);
+              }}
+              className="group flex flex-col justify-between rounded-2xl bg-white border border-slate-200/90 overflow-hidden hover:border-blue-500/40 hover:shadow-xl shadow-sm dark:bg-slate-900/60 dark:border-slate-800/80 transition-all duration-200 hover:-translate-y-1 cursor-pointer block"
             >
               <div>
                 {/* Article Cover Image */}
@@ -132,7 +148,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       )}

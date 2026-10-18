@@ -101,10 +101,14 @@ export const BlogView: React.FC<BlogViewProps> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArticles.map((article) => (
-            <article
+            <a
               key={article.id || article.slug}
-              onClick={() => onSelectArticle(article.slug)}
-              className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 overflow-hidden hover:border-blue-500/40 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl shadow-sm cursor-pointer"
+              href={`/blog/${article.slug}`}
+              onClick={(e) => {
+                e.preventDefault();
+                onSelectArticle(article.slug);
+              }}
+              className="group flex flex-col justify-between rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 overflow-hidden hover:border-blue-500/40 transition-all duration-200 hover:-translate-y-1 hover:shadow-xl shadow-sm cursor-pointer block"
             >
               <div>
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -153,7 +157,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
-            </article>
+            </a>
           ))}
         </div>
       )}

@@ -46,8 +46,12 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
     <header className="sticky top-0 z-40 w-full backdrop-blur-xl border-b transition-colors duration-200 bg-white/95 border-slate-200/90 text-slate-900 dark:bg-[#0b101b]/90 dark:border-slate-800/80 dark:text-slate-100 shadow-sm dark:shadow-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         {/* Brand Logo */}
-        <div 
-          onClick={() => handleLinkClick('/')}
+        <a 
+          href="/"
+          onClick={(e) => {
+            e.preventDefault();
+            handleLinkClick('/');
+          }}
           className="cursor-pointer group flex flex-col select-none"
         >
           <div className="flex items-center gap-1 text-2xl font-black tracking-tight">
@@ -61,16 +65,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
           <span className="text-[10px] tracking-wider font-medium text-slate-500 dark:text-slate-400 -mt-0.5">
             AI Tools • News • Guides • More
           </span>
-        </div>
+        </a>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
+        <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-7 text-sm font-medium">
           {navLinks.map((link) => {
             const isActive = currentPath === link.path;
             return (
-              <button
+              <a
                 key={link.path}
-                onClick={() => handleLinkClick(link.path)}
+                href={link.path}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLinkClick(link.path);
+                }}
                 className={`transition-colors py-1 ${
                   isActive
                     ? 'text-blue-600 dark:text-blue-400 font-semibold border-b-2 border-blue-500'
@@ -78,7 +86,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
                 }`}
               >
                 {link.label}
-              </button>
+              </a>
             );
           })}
         </nav>
@@ -143,13 +151,17 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
           </button>
 
           {/* Explore Tools CTA Button */}
-          <button
-            onClick={() => handleLinkClick('/tools')}
+          <a
+            href="/tools"
+            onClick={(e) => {
+              e.preventDefault();
+              handleLinkClick('/tools');
+            }}
             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <span>Explore Tools</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
 
           {/* Mobile Menu Hamburger */}
           <button
@@ -166,17 +178,21 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b101b] px-4 pt-3 pb-6 space-y-2 shadow-2xl animate-in slide-in-from-top-4 duration-200">
           {navLinks.map((link) => (
-            <button
+            <a
               key={link.path}
-              onClick={() => handleLinkClick(link.path)}
-              className={`w-full text-left px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
+              href={link.path}
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick(link.path);
+              }}
+              className={`block w-full text-left px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
                 currentPath === link.path
                   ? 'bg-blue-50 text-blue-600 dark:bg-blue-600/20 dark:text-blue-400 font-semibold'
                   : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/50'
               }`}
             >
               {link.label}
-            </button>
+            </a>
           ))}
 
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-2">
@@ -220,14 +236,18 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
               </div>
             </div>
 
-            <button
-              onClick={() => handleLinkClick('/tools')}
+            <a
+              href="/tools"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/tools');
+              }}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30"
             >
               <Sparkles className="w-4 h-4" />
               <span>Explore All AI Tools</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
         </div>
       )}

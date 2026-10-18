@@ -31,12 +31,16 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
     return (
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Category Not Found</h2>
-        <button
-          onClick={() => onNavigate('/categories')}
-          className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold"
+        <a
+          href="/categories"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate('/categories');
+          }}
+          className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold inline-block hover:bg-blue-500"
         >
           View All Categories
-        </button>
+        </a>
       </div>
     );
   }
@@ -123,10 +127,14 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {catArticles.map((article) => (
-              <div
+              <a
                 key={article.id}
-                onClick={() => onSelectArticle(article.slug)}
-                className="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md cursor-pointer group transition-all"
+                href={`/blog/${article.slug}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onSelectArticle(article.slug);
+                }}
+                className="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md cursor-pointer group transition-all block"
               >
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 mb-2">
                   {article.title}
@@ -137,7 +145,7 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
                 <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 inline-flex items-center gap-1">
                   Read Guide <ArrowRight className="w-3.5 h-3.5" />
                 </span>
-              </div>
+              </a>
             ))}
           </div>
         )}

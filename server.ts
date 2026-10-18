@@ -1,4 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -218,8 +219,44 @@ async function startServer() {
   } else {
     const distPath = path.resolve(__dirname, 'dist');
     app.use(express.static(distPath));
-    app.get('*', (_req: Request, res: Response) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+    app.get('*', (req: Request, res: Response) => {
+      const cleanPath = req.path.replace(/\/+$/, '') || '/';
+      const staticCandidate = path.join(distPath, cleanPath, 'index.html');
+      if (fs.existsSync(staticCandidate)) {
+        res.sendFile(staticCandidate);
+        return;
+      }
+      const fileCandidate = path.join(distPath, cleanPath);
+      if (fs.existsSync(fileCandidate) && fs.statSync(fileCandidate).isFile()) {
+        res.sendFile(fileCandidate);
+        return;
+      }
+      const articles = readJsonFile<any[]>(ARTICLES_JSON, []);
+      const categories = readJsonFile<any[]>(CATEGORIES_JSON, []);
+      const isKnownRoute =
+        cleanPath === '/' ||
+        cleanPath === '/tools' ||
+        cleanPath === '/blog' ||
+        cleanPath === '/categories' ||
+        cleanPath === '/about' ||
+        cleanPath === '/contact' ||
+        cleanPath === '/privacy' ||
+        cleanPath === '/terms' ||
+        cleanPath === '/editorial-policy' ||
+        cleanPath === '/affiliate-disclosure' ||
+        (cleanPath.startsWith('/blog/') && articles.some((a) => a.slug === cleanPath.slice('/blog/'.length))) ||
+        (cleanPath.startsWith('/category/') && categories.some((c) => c.slug === cleanPath.slice('/category/'.length)));
+
+      if (isKnownRoute) {
+        res.sendFile(path.join(distPath, 'index.html'));
+      } else {
+        const notFoundPath = path.join(distPath, '404.html');
+        if (fs.existsSync(notFoundPath)) {
+          res.status(404).sendFile(notFoundPath);
+        } else {
+          res.status(404).sendFile(path.join(distPath, 'index.html'));
+        }
+      }
     });
   }
 
