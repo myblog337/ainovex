@@ -28,7 +28,7 @@ export const FeaturedTools: React.FC<FeaturedToolsProps> = ({
           </p>
         </div>
         <a
-          href="/tools"
+          href="/tools/"
           onClick={(e) => {
             e.preventDefault();
             onViewAll();

@@ -29,5 +29,7 @@ const md = new Marked({
 
 /** Render markdown to HTML that is safe to put in dangerouslySetInnerHTML. */
 export function renderMarkdown(source: string): string {
-  return md.parse(source || '', { async: false }) as string;
+  // Strip top-level # title if present to ensure the page template holds the only H1 tag
+  const cleanSource = (source || '').replace(/^#\s+[^\n]+\n+/, '');
+  return md.parse(cleanSource, { async: false }) as string;
 }

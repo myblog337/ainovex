@@ -103,7 +103,7 @@ export const BlogView: React.FC<BlogViewProps> = ({
           {filteredArticles.map((article) => (
             <a
               key={article.id || article.slug}
-              href={`/blog/${article.slug}`}
+              href={`/blog/${article.slug}/`}
               onClick={(e) => {
                 e.preventDefault();
                 onSelectArticle(article.slug);

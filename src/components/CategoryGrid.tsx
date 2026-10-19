@@ -58,7 +58,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           </h2>
         </div>
         <a
-          href="/categories"
+          href="/categories/"
           onClick={(e) => {
             e.preventDefault();
             onViewAll();
@@ -80,7 +80,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
           return (
             <a
               key={cat.id || cat.slug}
-              href={`/category/${cat.slug}`}
+              href={`/category/${cat.slug}/`}
               onClick={(e) => {
                 e.preventDefault();
                 onSelectCategory(cat.slug);

@@ -32,10 +32,10 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
       <div className="max-w-3xl mx-auto px-4 py-24 text-center">
         <h2 className="text-2xl font-bold text-white mb-2">Category Not Found</h2>
         <a
-          href="/categories"
+          href="/categories/"
           onClick={(e) => {
             e.preventDefault();
-            onNavigate('/categories');
+            onNavigate('/categories/');
           }}
           className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold inline-block hover:bg-blue-500"
         >
@@ -48,7 +48,7 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumbs
-        items={[{ label: 'Categories', path: '/categories' }, { label: category.name }]}
+        items={[{ label: 'Categories', path: '/categories/' }, { label: category.name }]}
         onNavigate={onNavigate}
       />
 

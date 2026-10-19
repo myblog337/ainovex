@@ -104,7 +104,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://ai-novex.netlify.app/blog/${article.slug}`,
+      '@id': `https://ai-novex.netlify.app/blog/${article.slug}/`,
     },
   };
 
@@ -114,8 +114,8 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
 
       <Breadcrumbs
         items={[
-          { label: 'Blog', path: '/blog' },
-          { label: article.categoryName || article.category, path: `/category/${article.category}` },
+          { label: 'Blog', path: '/blog/' },
+          { label: article.categoryName || article.category, path: `/category/${article.category}/` },
           { label: article.title },
         ]}
         onNavigate={onNavigate}
@@ -124,10 +124,10 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
       {/* Header */}
       <div className="py-6 border-b border-slate-200 dark:border-slate-800/80 mb-8">
         <a
-          href={`/category/${article.category}`}
+          href={`/category/${article.category}/`}
           onClick={(e) => {
             e.preventDefault();
-            onNavigate(`/category/${article.category}`);
+            onNavigate(`/category/${article.category}/`);
           }}
           className="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-600/20 dark:text-blue-400 dark:border-blue-500/30 mb-4 hover:bg-blue-100 transition-colors"
         >
@@ -234,10 +234,10 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
             {related.map((r) => (
               <a
                 key={r.slug}
-                href={`/blog/${r.slug}`}
+                href={`/blog/${r.slug}/`}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate(`/blog/${r.slug}`);
+                  onNavigate(`/blog/${r.slug}/`);
                 }}
                 className="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500/40 shadow-sm hover:shadow-md cursor-pointer group transition-all block"
               >

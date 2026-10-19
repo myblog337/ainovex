@@ -41,17 +41,66 @@
   to = "/api/health.json"
   status = 200
 
-# Cloudflare function returned 404 here; keep same behaviour
+# Canonical trailing-slash redirects for direct 1-hop normalization
 [[redirects]]
-  from = "/.well-known/ai-catalog.json"
-  to = "/404.html"
-  status = 404
+  from = "/tools"
+  to = "/tools/"
+  status = 301
+
+[[redirects]]
+  from = "/blog"
+  to = "/blog/"
+  status = 301
+
+[[redirects]]
+  from = "/categories"
+  to = "/categories/"
+  status = 301
+
+[[redirects]]
+  from = "/about"
+  to = "/about/"
+  status = 301
+
+[[redirects]]
+  from = "/contact"
+  to = "/contact/"
+  status = 301
+
+[[redirects]]
+  from = "/privacy"
+  to = "/privacy/"
+  status = 301
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms/"
+  status = 301
+
+[[redirects]]
+  from = "/editorial-policy"
+  to = "/editorial-policy/"
+  status = 301
+
+[[redirects]]
+  from = "/affiliate-disclosure"
+  to = "/affiliate-disclosure/"
+  status = 301
 
 # ---- SPA fallback (must be last) ----
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Global security & SEO headers (enforces single-hop HTTPS with HSTS)
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[headers]]
   for = "/api/*"
@@ -72,7 +121,19 @@
     Content-Type = "application/rss+xml; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
-# ---- Caching (Vite adds a content hash to /assets/* file names, so they never change) ----
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/c49a629b37c0411eb31a896d8e20791d.txt"
+  [headers.values]
+    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+
+# ---- Caching (Vite adds content hashes to assets) ----
 [[headers]]
   for = "/assets/*"
   [headers.values]

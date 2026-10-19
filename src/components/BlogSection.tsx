@@ -31,7 +31,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           </p>
         </div>
         <a
-          href="/blog"
+          href="/blog/"
           onClick={(e) => {
             e.preventDefault();
             onViewAll();
@@ -64,7 +64,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
 
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a
-              href="/tools"
+              href="/tools/"
               onClick={(e) => {
                 e.preventDefault();
                 onExploreTools();
@@ -74,7 +74,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
               Explore AI Tools Directory
             </a>
             <a
-              href="/blog"
+              href="/blog/"
               onClick={(e) => {
                 e.preventDefault();
                 onViewAll();
@@ -91,7 +91,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           {publishedArticles.slice(0, 3).map((article) => (
             <a
               key={article.id || article.slug}
-              href={`/blog/${article.slug}`}
+              href={`/blog/${article.slug}/`}
               onClick={(e) => {
                 e.preventDefault();
                 onSelectArticle(article.slug);

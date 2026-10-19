@@ -11,11 +11,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
   const quickLinks = [
     { label: 'Home', path: '/' },
-    { label: 'AI Tools', path: '/tools' },
-    { label: 'Blog', path: '/blog' },
-    { label: 'Categories', path: '/categories' },
-    { label: 'About', path: '/about' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'AI Tools', path: '/tools/' },
+    { label: 'Blog', path: '/blog/' },
+    { label: 'Categories', path: '/categories/' },
+    { label: 'About', path: '/about/' },
+    { label: 'Contact', path: '/contact/' },
   ];
 
   const popularCategories = [
@@ -66,7 +66,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </a>
 
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
-              AINOVEX is your trusted source for the best AI tools, latest news, and helpful guides. Boost your productivity, creativity and work smarter with the power of AI.
+              AINOVEX is your trusted source for the best AI tools, latest news, and helpful guides. Boost your productivity, creativity and work smarter with curated artificial intelligence.
             </p>
           </div>
 
@@ -102,10 +102,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {popularCategories.map((cat) => (
                 <a
                   key={cat.slug}
-                  href={`/category/${cat.slug}`}
+                  href={`/category/${cat.slug}/`}
                   onClick={(e) => {
                     e.preventDefault();
-                    onNavigate(`/category/${cat.slug}`);
+                    onNavigate(`/category/${cat.slug}/`);
                   }}
                   className="text-left text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors truncate cursor-pointer block"
                 >
@@ -148,14 +148,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               </div>
             )}
 
-            {/* Social Icons */}
+            {/* Social Icons with direct canonical destinations */}
             <div className="flex items-center gap-2 pt-1">
               {[
-                { name: 'Facebook', label: 'f', href: 'https://facebook.com' },
+                { name: 'Facebook', label: 'f', href: 'https://www.facebook.com' },
                 { name: 'X', label: '𝕏', href: 'https://x.com' },
-                { name: 'YouTube', label: '▶', href: 'https://youtube.com' },
-                { name: 'LinkedIn', label: 'in', href: 'https://linkedin.com' },
-                { name: 'Pinterest', label: 'P', href: 'https://pinterest.com' },
+                { name: 'YouTube', label: '▶', href: 'https://www.youtube.com' },
+                { name: 'LinkedIn', label: 'in', href: 'https://www.linkedin.com' },
+                { name: 'Pinterest', label: 'P', href: 'https://www.pinterest.com' },
                 { name: 'RSS', label: 'ツ', href: '/rss.xml' },
               ].map((social) => (
                 <a
@@ -179,40 +179,40 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
           <div className="flex flex-wrap items-center gap-5">
             <a
-              href="/privacy"
+              href="/privacy/"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate('/privacy');
+                onNavigate('/privacy/');
               }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Privacy Policy
             </a>
             <a
-              href="/terms"
+              href="/terms/"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate('/terms');
+                onNavigate('/terms/');
               }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Terms of Service
             </a>
             <a
-              href="/editorial-policy"
+              href="/editorial-policy/"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate('/editorial-policy');
+                onNavigate('/editorial-policy/');
               }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >
               Editorial Policy
             </a>
             <a
-              href="/affiliate-disclosure"
+              href="/affiliate-disclosure/"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate('/affiliate-disclosure');
+                onNavigate('/affiliate-disclosure/');
               }}
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
             >

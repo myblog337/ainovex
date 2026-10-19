@@ -3,27 +3,27 @@
 <channel>
   <title>AINOVEX</title>
   <link>https://ai-novex.netlify.app/</link>
-  <description>Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.</description>
+  <description>Discover the best AI tools, software reviews, and guides on AINOVEX. Boost productivity and work smarter with curated artificial intelligence.</description>
   <language>en-us</language>
   <atom:link href="https://ai-novex.netlify.app/rss.xml" rel="self" type="application/rss+xml" />
   <item>
     <title>Top AI Video Generators in 2026: Features, Pricing &amp; Comparison</title>
-    <link>https://ai-novex.netlify.app/blog/top-ai-video-generators-guide</link>
-    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/top-ai-video-generators-guide</guid>
+    <link>https://ai-novex.netlify.app/blog/top-ai-video-generators-guide/</link>
+    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/top-ai-video-generators-guide/</guid>
     <description>From text-to-video realism to cinematic camera controls, we compare Runway, Sora, Pika, and Luma Dream Machine side-by-side.</description>
     <pubDate>Thu, 02 Apr 2026 00:00:00 GMT</pubDate>
   </item>
   <item>
     <title>How to Summarize Any PDF with AI: Step-by-Step Guide</title>
-    <link>https://ai-novex.netlify.app/blog/how-to-summarize-a-pdf-with-ai</link>
-    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/how-to-summarize-a-pdf-with-ai</guid>
+    <link>https://ai-novex.netlify.app/blog/how-to-summarize-a-pdf-with-ai/</link>
+    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/how-to-summarize-a-pdf-with-ai/</guid>
     <description>Learn how to digest lengthy research papers, financial reports, and textbooks in seconds using modern AI summarization tools.</description>
     <pubDate>Fri, 20 Mar 2026 00:00:00 GMT</pubDate>
   </item>
   <item>
     <title>Best Free AI Tools in 2026 for Productivity and Creators</title>
-    <link>https://ai-novex.netlify.app/blog/best-free-ai-tools-2026</link>
-    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/best-free-ai-tools-2026</guid>
+    <link>https://ai-novex.netlify.app/blog/best-free-ai-tools-2026/</link>
+    <guid isPermaLink="true">https://ai-novex.netlify.app/blog/best-free-ai-tools-2026/</guid>
     <description>A curated breakdown of the most capable, completely free AI tools for writing, image creation, research, and daily workflow automation.</description>
     <pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate>
   </item>

@@ -28,7 +28,7 @@
     "tags": ["Image Generation", "Design"],
     "pricing": "Paid",
     "isFeatured": true,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Midjourney_Emblem.png",
+    "icon": "/images/midjourney.svg",
     "iconBg": "bg-slate-800 text-white",
     "brandInitial": "Midjourney",
     "rating": 4.9
@@ -45,7 +45,7 @@
     "tags": ["Design", "Productivity"],
     "pricing": "Freemium",
     "isFeatured": true,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
+    "icon": "/images/canva.svg",
     "iconBg": "bg-gradient-to-tr from-blue-600 to-purple-600 text-white",
     "brandInitial": "Canva",
     "rating": 4.8
@@ -54,7 +54,7 @@
     "id": "runway",
     "name": "Runway",
     "slug": "runway",
-    "url": "https://runwayml.com",
+    "url": "https://runway.com",
     "description": "Create and edit videos with powerful AI tools.",
     "longDescription": "Runway provides next-generation Gen-2 and Gen-3 Alpha video generation models, video-to-video style transfers, motion brush control, green screen rotoscoping, and audio generation for professional filmmakers.",
     "category": "video-audio",
@@ -62,7 +62,7 @@
     "tags": ["Video", "Creating"],
     "pricing": "Freemium",
     "isFeatured": true,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/7/75/Runway_ML_Logo.png",
+    "icon": "/images/runway.svg",
     "iconBg": "bg-emerald-950 text-emerald-400 border border-emerald-500/30",
     "brandInitial": "Runway",
     "rating": 4.7
@@ -79,7 +79,7 @@
     "tags": ["Image Generation", "Design"],
     "pricing": "Freemium",
     "isFeatured": true,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/e/ec/Leonardo_Ai_Logo.png",
+    "icon": "/images/leonardo.svg",
     "iconBg": "bg-gradient-to-tr from-purple-800 to-pink-600 text-white",
     "brandInitial": "Leonardo AI",
     "rating": 4.8
@@ -96,7 +96,7 @@
     "tags": ["Writing", "Coding"],
     "pricing": "Freemium",
     "isFeatured": false,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/7/78/Anthropic_logo.svg",
+    "icon": "/images/claude.svg",
     "iconBg": "bg-amber-700/20 text-amber-400",
     "brandInitial": "Claude",
     "rating": 4.9
@@ -105,7 +105,7 @@
     "id": "cursor",
     "name": "Cursor",
     "slug": "cursor",
-    "url": "https://www.cursor.com",
+    "url": "https://cursor.com",
     "description": "The AI-first Code Editor built to supercharge engineer productivity.",
     "longDescription": "Cursor is a fork of VS Code engineered from the ground up for collaborative AI programming with whole-codebase indexing, multi-file edits, and instant terminal command suggestions.",
     "category": "code-dev",
@@ -113,7 +113,7 @@
     "tags": ["Code & Dev", "Productivity"],
     "pricing": "Freemium",
     "isFeatured": false,
-    "icon": "https://raw.githubusercontent.com/getcursor/cursor/main/assets/icon.png",
+    "icon": "/images/cursor.svg",
     "iconBg": "bg-slate-900 text-cyan-400 border border-cyan-500/30",
     "brandInitial": "Cursor",
     "rating": 4.9
@@ -130,7 +130,7 @@
     "tags": ["Audio", "Speech"],
     "pricing": "Freemium",
     "isFeatured": false,
-    "icon": "https://upload.wikimedia.org/wikipedia/commons/4/4f/Eleven_Labs_logo.svg",
+    "icon": "/images/elevenlabs.svg",
     "iconBg": "bg-slate-900 text-white",
     "brandInitial": "ElevenLabs",
     "rating": 4.8

@@ -46,7 +46,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, onNavigate }) =
                   </span>
                 ) : (
                   <a
-                    href={item.path}
+                    href={item.path.endsWith('/') ? item.path : `${item.path}/`}
                     itemProp="item"
                     onClick={(e) => {
                       e.preventDefault();

@@ -83,29 +83,29 @@ for (const a of articles) {
   writeApi(`articles/${a.slug}/index.json`, { ...a, content });
 }
 
-// Sitemap.xml
+// Sitemap.xml (standardized on canonical trailing slashes for zero redirects)
 const staticRoutes = [
   ['/', '1.0', 'daily'],
-  ['/tools', '0.9', 'daily'],
-  ['/blog', '0.9', 'daily'],
-  ['/categories', '0.8', 'weekly'],
-  ['/about', '0.5', 'monthly'],
-  ['/contact', '0.5', 'monthly'],
-  ['/privacy', '0.3', 'monthly'],
-  ['/terms', '0.3', 'monthly'],
-  ['/editorial-policy', '0.4', 'monthly'],
-  ['/affiliate-disclosure', '0.3', 'monthly'],
+  ['/tools/', '0.9', 'daily'],
+  ['/blog/', '0.9', 'daily'],
+  ['/categories/', '0.8', 'weekly'],
+  ['/about/', '0.5', 'monthly'],
+  ['/contact/', '0.5', 'monthly'],
+  ['/privacy/', '0.3', 'monthly'],
+  ['/terms/', '0.3', 'monthly'],
+  ['/editorial-policy/', '0.4', 'monthly'],
+  ['/affiliate-disclosure/', '0.3', 'monthly'],
 ];
 
 let sm = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 for (const [p, pr, cf] of staticRoutes) {
-  sm += `  <url>\n    <loc>${esc(baseUrl + (p === '/' ? '/' : p))}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${cf}</changefreq>\n    <priority>${pr}</priority>\n  </url>\n`;
+  sm += `  <url>\n    <loc>${esc(baseUrl + p)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${cf}</changefreq>\n    <priority>${pr}</priority>\n  </url>\n`;
 }
 for (const a of articles) {
-  sm += `  <url>\n    <loc>${esc(`${baseUrl}/blog/${a.slug}`)}</loc>\n    <lastmod>${esc(a.updatedAt || a.publishedAt || today)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+  sm += `  <url>\n    <loc>${esc(`${baseUrl}/blog/${a.slug}/`)}</loc>\n    <lastmod>${esc(a.updatedAt || a.publishedAt || today)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
 }
 for (const c of categories) {
-  sm += `  <url>\n    <loc>${esc(`${baseUrl}/category/${c.slug}`)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+  sm += `  <url>\n    <loc>${esc(`${baseUrl}/category/${c.slug}/`)}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
 }
 sm += `</urlset>\n`;
 fs.writeFileSync(path.join(dist, 'sitemap.xml'), sm);
@@ -117,7 +117,7 @@ rss += `  <title>${esc(settings.siteTitle || 'AINOVEX')}</title>\n  <link>${esc(
 rss += `  <description>${esc(settings.siteDescription || '')}</description>\n  <language>en-us</language>\n`;
 rss += `  <atom:link href="${esc(baseUrl)}/rss.xml" rel="self" type="application/rss+xml" />\n`;
 for (const a of [...articles].sort((x, y) => String(y.publishedAt).localeCompare(String(x.publishedAt)))) {
-  const url = `${baseUrl}/blog/${a.slug}`;
+  const url = `${baseUrl}/blog/${a.slug}/`;
   rss += `  <item>\n    <title>${esc(a.title)}</title>\n    <link>${esc(url)}</link>\n    <guid isPermaLink="true">${esc(url)}</guid>\n    <description>${esc(a.excerpt || '')}</description>\n    <pubDate>${new Date(a.publishedAt).toUTCString()}</pubDate>\n  </item>\n`;
 }
 rss += `</channel>\n</rss>\n`;
@@ -128,6 +128,12 @@ fs.writeFileSync(path.join(root, 'public', 'rss.xml'), rss);
 const robotsTxt = `User-agent: *\nAllow: /\n\nSitemap: ${baseUrl}/sitemap.xml\n`;
 fs.writeFileSync(path.join(dist, 'robots.txt'), robotsTxt);
 fs.writeFileSync(path.join(root, 'public', 'robots.txt'), robotsTxt);
+
+// Copy IndexNow verification key file
+const indexNowKeyFile = 'c49a629b37c0411eb31a896d8e20791d.txt';
+if (fs.existsSync(path.join(root, 'public', indexNowKeyFile))) {
+  fs.copyFileSync(path.join(root, 'public', indexNowKeyFile), path.join(dist, indexNowKeyFile));
+}
 
 // Ads.txt
 if (ads.enabled && ads.adsTxtContent && !/pub-X+/i.test(ads.adsTxtContent)) {
@@ -158,6 +164,13 @@ try {
   console.warn('[postbuild] CSS inlining skipped:', err.message);
 }
 
+// Helper to keep meta description <= 155 characters
+const trimDesc = (desc) => {
+  const clean = String(desc || '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= 155) return clean;
+  return clean.slice(0, 152).trim() + '...';
+};
+
 // ============================================================================
 // PRE-RENDER ENGINE: Render semantic HTML & rich metadata for every route
 // ============================================================================
@@ -174,14 +187,14 @@ const renderHeader = () => `
     </a>
     <nav aria-label="Main Navigation" class="hidden md:flex items-center gap-7 text-sm font-medium">
       <a href="/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Home</a>
-      <a href="/tools" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">AI Tools</a>
-      <a href="/categories" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Categories</a>
-      <a href="/blog" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Blog</a>
-      <a href="/about" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">About</a>
-      <a href="/contact" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Contact</a>
+      <a href="/tools/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">AI Tools</a>
+      <a href="/categories/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Categories</a>
+      <a href="/blog/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Blog</a>
+      <a href="/about/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">About</a>
+      <a href="/contact/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Contact</a>
     </nav>
     <div class="flex items-center gap-3">
-      <a href="/tools" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all">Explore Tools</a>
+      <a href="/tools/" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all">Explore Tools</a>
     </div>
   </div>
 </header>`;
@@ -199,24 +212,24 @@ const renderFooter = () => `
           <span class="text-[10px] tracking-wider font-medium text-slate-500 dark:text-slate-400 -mt-0.5">AI Tools • News • Guides • More</span>
         </a>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
-          AINOVEX is your trusted source for the best AI tools, latest news, and helpful guides. Boost your productivity, creativity and work smarter with curated artificial intelligence.
+          AINOVEX is your trusted source for the best AI tools, latest news, and helpful guides. Boost your productivity and work smarter with curated artificial intelligence.
         </p>
       </div>
       <div class="lg:col-span-2">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">QUICK LINKS</h4>
         <ul class="space-y-2.5 text-xs sm:text-sm">
           <li><a href="/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Home</a></li>
-          <li><a href="/tools" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">AI Tools</a></li>
-          <li><a href="/blog" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Blog</a></li>
-          <li><a href="/categories" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Categories</a></li>
-          <li><a href="/about" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">About</a></li>
-          <li><a href="/contact" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Contact</a></li>
+          <li><a href="/tools/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">AI Tools</a></li>
+          <li><a href="/blog/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Blog</a></li>
+          <li><a href="/categories/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Categories</a></li>
+          <li><a href="/about/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">About</a></li>
+          <li><a href="/contact/" class="text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors block">Contact</a></li>
         </ul>
       </div>
       <div class="lg:col-span-3">
         <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">POPULAR CATEGORIES</h4>
         <div class="grid grid-cols-2 gap-x-2 gap-y-2.5 text-xs sm:text-sm">
-          ${categories.slice(0, 8).map(c => `<a href="/category/${c.slug}" class="text-left text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors truncate block">${esc(c.name)}</a>`).join('')}
+          ${categories.slice(0, 8).map(c => `<a href="/category/${c.slug}/" class="text-left text-slate-600 hover:text-blue-600 dark:text-slate-400 dark:hover:text-blue-400 transition-colors truncate block">${esc(c.name)}</a>`).join('')}
         </div>
       </div>
       <div class="lg:col-span-3">
@@ -226,17 +239,17 @@ const renderFooter = () => `
         </p>
         <div class="flex items-center gap-2 pt-1">
           <a href="/rss.xml" class="px-3 py-1 rounded-full bg-slate-200 hover:bg-blue-600 text-slate-700 hover:text-white dark:bg-slate-800 dark:text-slate-300 text-xs font-bold transition-all">RSS Feed</a>
-          <a href="/tools" class="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-bold transition-all">Directory</a>
+          <a href="/tools/" class="px-3 py-1 rounded-full bg-blue-600 text-white text-xs font-bold transition-all">Directory</a>
         </div>
       </div>
     </div>
     <div class="pt-8 border-t border-slate-200 dark:border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
       <p>&copy; 2026 AINOVEX. All rights reserved.</p>
       <div class="flex flex-wrap items-center gap-5">
-        <a href="/privacy" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a>
-        <a href="/terms" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</a>
-        <a href="/editorial-policy" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Editorial Policy</a>
-        <a href="/affiliate-disclosure" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a>
+        <a href="/privacy/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a>
+        <a href="/terms/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</a>
+        <a href="/editorial-policy/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Editorial Policy</a>
+        <a href="/affiliate-disclosure/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a>
       </div>
     </div>
   </div>
@@ -254,15 +267,17 @@ const renderBreadcrumb = (crumbs) => `
     ${crumbs.map((c, i) => `
     <li class="text-slate-400 dark:text-slate-600" aria-hidden="true">&rsaquo;</li>
     <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-      ${c.path ? `<a href="${c.path}" itemProp="item" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"><span itemProp="name">${esc(c.label)}</span></a>` : `<span itemProp="name" class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-md inline-block">${esc(c.label)}</span>`}
+      ${c.path ? `<a href="${c.path.endsWith('/') ? c.path : c.path + '/'}" itemProp="item" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"><span itemProp="name">${esc(c.label)}</span></a>` : `<span itemProp="name" class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-md inline-block">${esc(c.label)}</span>`}
       <meta itemProp="position" content="${i + 2}" />
     </li>`).join('')}
   </ol>
 </nav>`;
 
 function createPageHtml({ title, description, path: pagePath, image, ogType = 'website', jsonLd, contentHtml }) {
-  const url = `${baseUrl}${pagePath === '/' ? '/' : pagePath}`;
+  const normPath = pagePath === '/' ? '/' : (pagePath.endsWith('/') ? pagePath : pagePath + '/');
+  const url = `${baseUrl}${normPath}`;
   const ogImg = image || defaultOgImage;
+  const safeDesc = trimDesc(description);
 
   let html = baseHtml;
 
@@ -270,9 +285,9 @@ function createPageHtml({ title, description, path: pagePath, image, ogType = 'w
   html = html.replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)}</title>`);
 
   // Replace/inject Description
-  html = html.replace(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${esc(description)}" />`);
+  html = html.replace(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${esc(safeDesc)}" />`);
 
-  // Replace/inject Canonical
+  // Replace/inject Canonical (always points to the direct 200 URL with trailing slash)
   if (/<link\s+rel=["']canonical["'][^>]*>/i.test(html)) {
     html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${esc(url)}" />`);
   } else {
@@ -281,14 +296,14 @@ function createPageHtml({ title, description, path: pagePath, image, ogType = 'w
 
   // Replace OpenGraph tags
   html = html.replace(/<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${esc(title)}" />`);
-  html = html.replace(/<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${esc(description)}" />`);
+  html = html.replace(/<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${esc(safeDesc)}" />`);
   html = html.replace(/<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${esc(url)}" />`);
   html = html.replace(/<meta\s+property=["']og:type["'][^>]*>/i, `<meta property="og:type" content="${ogType}" />`);
   html = html.replace(/<meta\s+property=["']og:image["'][^>]*>/i, `<meta property="og:image" content="${esc(ogImg)}" />`);
 
   // Replace Twitter tags
   html = html.replace(/<meta\s+name=["']twitter:title["'][^>]*>/i, `<meta name="twitter:title" content="${esc(title)}" />`);
-  html = html.replace(/<meta\s+name=["']twitter:description["'][^>]*>/i, `<meta name="twitter:description" content="${esc(description)}" />`);
+  html = html.replace(/<meta\s+name=["']twitter:description["'][^>]*>/i, `<meta name="twitter:description" content="${esc(safeDesc)}" />`);
   html = html.replace(/<meta\s+name=["']twitter:image["'][^>]*>/i, `<meta name="twitter:image" content="${esc(ogImg)}" />`);
 
   // Inject JSON-LD Schema
@@ -328,21 +343,21 @@ const homeContent = `
   </p>
   <div class="flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-8">
     <span class="font-semibold text-amber-500 dark:text-amber-400">Trending:</span>
-    <a href="/tools?q=ChatGPT" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">ChatGPT</a>
-    <a href="/tools?q=Image" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">AI Image Generator</a>
-    <a href="/tools?q=Video" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Video Editing</a>
-    <a href="/tools?q=Productivity" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Productivity</a>
+    <a href="/tools/?q=ChatGPT" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">ChatGPT</a>
+    <a href="/tools/?q=Image" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">AI Image Generator</a>
+    <a href="/tools/?q=Video" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Video Editing</a>
+    <a href="/tools/?q=Productivity" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Productivity</a>
   </div>
 </section>
 
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
   <div class="flex items-center justify-between mb-6">
     <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Browse by Category</h2>
-    <a href="/categories" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Categories &rarr;</a>
+    <a href="/categories/" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Categories &rarr;</a>
   </div>
   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5 sm:gap-4">
     ${categories.map(c => `
-    <a href="/category/${c.slug}" class="flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 shadow-sm dark:bg-slate-900/60 dark:border-slate-800 text-center block">
+    <a href="/category/${c.slug}/" class="flex flex-col items-center justify-center p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 hover:border-blue-500 shadow-sm dark:bg-slate-900/60 dark:border-slate-800 text-center block">
       <span class="text-sm font-bold text-slate-800 dark:text-slate-200 line-clamp-1">${esc(c.name)}</span>
       <span class="text-xs text-slate-500 dark:text-slate-400 mt-1">${c.toolCount || 8}+ tools</span>
     </a>`).join('')}
@@ -355,12 +370,15 @@ const homeContent = `
       <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Featured AI Tools</h2>
       <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Handpicked top AI tools to help you work faster, create better and achieve more.</p>
     </div>
-    <a href="/tools" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Tools &rarr;</a>
+    <a href="/tools/" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Tools &rarr;</a>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     ${tools.slice(0, 6).map(t => `
     <div class="p-6 rounded-2xl bg-white border border-slate-200 dark:bg-slate-900/70 dark:border-slate-800 text-center flex flex-col justify-between">
       <div>
+        <div class="w-12 h-12 mx-auto mb-3 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800/80 p-1 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center">
+          <img src="${esc(t.icon)}" alt="${esc(t.name)} Logo" class="w-full h-full object-contain" />
+        </div>
         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">${esc(t.name)}</h3>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">${esc(t.description)}</p>
       </div>
@@ -375,11 +393,11 @@ const homeContent = `
       <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Latest Blog &amp; News</h2>
       <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">Stay updated with the latest AI news, tips, tutorials and industry trends.</p>
     </div>
-    <a href="/blog" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Articles &rarr;</a>
+    <a href="/blog/" class="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Articles &rarr;</a>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     ${articles.map(a => `
-    <a href="/blog/${a.slug}" class="rounded-2xl bg-white border border-slate-200 overflow-hidden dark:bg-slate-900/60 dark:border-slate-800 block shadow-sm hover:border-blue-500 transition-all">
+    <a href="/blog/${a.slug}/" class="rounded-2xl bg-white border border-slate-200 overflow-hidden dark:bg-slate-900/60 dark:border-slate-800 block shadow-sm hover:border-blue-500 transition-all">
       <img src="${esc(a.featuredImage)}" alt="${esc(a.imageAlt || a.title)}" class="w-full aspect-[16/10] object-cover" />
       <div class="p-5">
         <span class="text-xs font-bold uppercase text-blue-600 dark:text-blue-400">${esc(a.categoryName || a.category)}</span>
@@ -392,7 +410,7 @@ const homeContent = `
 
 const homeHtml = createPageHtml({
   title: 'AINOVEX - AI Tools & Technology Platform',
-  description: 'Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.',
+  description: 'Discover the best AI tools, software reviews, and guides on AINOVEX. Boost productivity and work smarter with curated artificial intelligence.',
   path: '/',
   contentHtml: homeContent,
   jsonLd: {
@@ -400,10 +418,10 @@ const homeHtml = createPageHtml({
     '@type': 'WebSite',
     name: 'AINOVEX',
     url: `${baseUrl}/`,
-    description: 'Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.',
+    description: 'Discover the best AI tools, software reviews, and guides on AINOVEX. Boost productivity and work smarter with curated artificial intelligence.',
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${baseUrl}/tools?q={search_term_string}`,
+      target: `${baseUrl}/tools/?q={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
   },
@@ -411,7 +429,7 @@ const homeHtml = createPageHtml({
 writePage('index.html', homeHtml);
 
 // ----------------------------------------------------------------------------
-// 2. Tools Directory (/tools)
+// 2. Tools Directory (/tools/)
 // ----------------------------------------------------------------------------
 const toolsContent = `
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -425,13 +443,16 @@ const toolsContent = `
     </p>
   </div>
   <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
-    <a href="/tools" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white">All Tools (${tools.length})</a>
-    ${categories.map(c => `<a href="/category/${c.slug}" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${esc(c.name)}</a>`).join('')}
+    <a href="/tools/" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white">All Tools (${tools.length})</a>
+    ${categories.map(c => `<a href="/category/${c.slug}/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${esc(c.name)}</a>`).join('')}
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     ${tools.map(t => `
     <div class="p-6 rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 text-center flex flex-col justify-between">
       <div>
+        <div class="w-12 h-12 mx-auto mb-3 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800/80 p-1 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center">
+          <img src="${esc(t.icon)}" alt="${esc(t.name)} Logo" class="w-full h-full object-contain" />
+        </div>
         <div class="text-xs text-amber-500 font-semibold mb-1">&#9733; ${t.rating || 4.8} &bull; ${esc(t.pricing)}</div>
         <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-2">${esc(t.name)}</h2>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">${esc(t.description)}</p>
@@ -444,22 +465,24 @@ const toolsContent = `
   </div>
 </div>`;
 
-writePage('tools/index.html', createPageHtml({
+const toolsPageHtml = createPageHtml({
   title: 'Best AI Tools Directory & Software Reviews 2026 | AINOVEX',
   description: 'Browse and compare the top artificial intelligence tools for writing, image creation, video, coding, and productivity. Find the best software for your needs.',
-  path: '/tools',
+  path: '/tools/',
   contentHtml: toolsContent,
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'AI Tools Directory',
-    url: `${baseUrl}/tools`,
+    url: `${baseUrl}/tools/`,
     description: 'Browse and compare the top artificial intelligence tools for writing, image creation, video, coding, and productivity.',
   },
-}));
+});
+writePage('tools/index.html', toolsPageHtml);
+writePage('tools.html', toolsPageHtml);
 
 // ----------------------------------------------------------------------------
-// 3. Blog Archive (/blog)
+// 3. Blog Archive (/blog/)
 // ----------------------------------------------------------------------------
 const blogContent = `
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -473,12 +496,12 @@ const blogContent = `
     </p>
   </div>
   <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
-    <a href="/blog" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white">All Guides (${articles.length})</a>
-    ${categories.map(c => `<a href="/category/${c.slug}" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${esc(c.name)}</a>`).join('')}
+    <a href="/blog/" class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-600 text-white">All Guides (${articles.length})</a>
+    ${categories.map(c => `<a href="/category/${c.slug}/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">${esc(c.name)}</a>`).join('')}
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     ${articles.map(a => `
-    <a href="/blog/${a.slug}" class="rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:border-blue-500 transition-all block">
+    <a href="/blog/${a.slug}/" class="rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:border-blue-500 transition-all block">
       <img src="${esc(a.featuredImage)}" alt="${esc(a.imageAlt || a.title)}" class="w-full aspect-[16/10] object-cover" />
       <div class="p-5">
         <span class="text-xs font-bold uppercase text-blue-600 dark:text-blue-400">${esc(a.categoryName || a.category)}</span>
@@ -490,22 +513,24 @@ const blogContent = `
   </div>
 </div>`;
 
-writePage('blog/index.html', createPageHtml({
+const blogPageHtml = createPageHtml({
   title: 'AI Insights, Tutorials & Technology Guides | AINOVEX',
   description: 'Explore actionable AI tutorials, practical workflows, tool comparisons, and tech guides from the AINOVEX editorial team. Master modern AI applications today.',
-  path: '/blog',
+  path: '/blog/',
   contentHtml: blogContent,
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'AI Insights, Tutorials & Technology Guides',
-    url: `${baseUrl}/blog`,
+    url: `${baseUrl}/blog/`,
     description: 'Explore actionable AI tutorials, practical workflows, tool comparisons, and tech guides from the AINOVEX editorial team.',
   },
-}));
+});
+writePage('blog/index.html', blogPageHtml);
+writePage('blog.html', blogPageHtml);
 
 // ----------------------------------------------------------------------------
-// 4. Categories Directory (/categories)
+// 4. Categories Directory (/categories/)
 // ----------------------------------------------------------------------------
 const categoriesContent = `
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -520,7 +545,7 @@ const categoriesContent = `
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     ${categories.map(c => `
-    <a href="/category/${c.slug}" class="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm transition-all block">
+    <a href="/category/${c.slug}/" class="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm transition-all block">
       <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-2">${esc(c.name)}</h2>
       <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed mb-4">${esc(c.description)}</p>
       <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">Browse ${esc(c.name)} &rarr;</span>
@@ -528,22 +553,24 @@ const categoriesContent = `
   </div>
 </div>`;
 
-writePage('categories/index.html', createPageHtml({
+const categoriesPageHtml = createPageHtml({
   title: 'Browse AI Categories & Topics | AINOVEX',
   description: 'Explore specialized AI software categories from writing and image generation to coding and productivity. Find the right tools for your specific workflow.',
-  path: '/categories',
+  path: '/categories/',
   contentHtml: categoriesContent,
   jsonLd: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Browse AI Categories',
-    url: `${baseUrl}/categories`,
+    url: `${baseUrl}/categories/`,
     description: 'Explore specialized AI software categories from writing and image generation to coding and productivity.',
   },
-}));
+});
+writePage('categories/index.html', categoriesPageHtml);
+writePage('categories.html', categoriesPageHtml);
 
 // ----------------------------------------------------------------------------
-// 5. Individual Article Pages (/blog/[slug])
+// 5. Individual Article Pages (/blog/[slug]/)
 // ----------------------------------------------------------------------------
 for (const a of articles) {
   const mdFile = path.resolve(root, a.contentPath || `content/articles/${a.slug}.md`);
@@ -551,19 +578,21 @@ for (const a of articles) {
   if (fs.existsSync(mdFile)) {
     mdRaw = fs.readFileSync(mdFile, 'utf-8');
   }
-  const bodyHtml = marked.parse(mdRaw);
+  // Strip duplicate top-level # title from markdown body so page template holds the only <h1>
+  const cleanedMd = mdRaw.replace(/^#\s+[^\n]+\n+/, '');
+  const bodyHtml = marked.parse(cleanedMd);
 
   const related = articles.filter(x => x.slug !== a.slug).slice(0, 2);
 
   const articleContent = `
 <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   ${renderBreadcrumb([
-    { label: 'Blog', path: '/blog' },
-    { label: a.categoryName || a.category, path: `/category/${a.category}` },
+    { label: 'Blog', path: '/blog/' },
+    { label: a.categoryName || a.category, path: `/category/${a.category}/` },
     { label: a.title },
   ])}
   <div class="py-6 border-b border-slate-200 dark:border-slate-800/80 mb-8">
-    <a href="/category/${a.category}" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-600/20 dark:text-blue-400 dark:border-blue-500/30 mb-4 hover:bg-blue-100 transition-colors">
+    <a href="/category/${a.category}/" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-600/20 dark:text-blue-400 dark:border-blue-500/30 mb-4 hover:bg-blue-100 transition-colors">
       ${esc(a.categoryName || a.category)}
     </a>
     <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
@@ -600,7 +629,7 @@ for (const a of articles) {
     <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Related Guides &amp; Tutorials</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       ${related.map(r => `
-      <a href="/blog/${r.slug}" class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm block">
+      <a href="/blog/${r.slug}/" class="p-5 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm block">
         <div class="text-xs text-blue-600 dark:text-blue-400 font-semibold mb-2">${esc(r.categoryName || r.category)}</div>
         <h4 class="text-base font-bold text-slate-900 dark:text-white mb-2">${esc(r.title)}</h4>
         <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">${esc(r.excerpt)}</p>
@@ -612,7 +641,7 @@ for (const a of articles) {
   const articleHtml = createPageHtml({
     title: a.metaTitle || `${a.title} | AINOVEX`,
     description: a.metaDescription || a.excerpt,
-    path: `/blog/${a.slug}`,
+    path: `/blog/${a.slug}/`,
     image: a.featuredImage,
     ogType: 'article',
     contentHtml: articleContent,
@@ -620,7 +649,7 @@ for (const a of articles) {
       '@context': 'https://schema.org',
       '@type': 'BlogPosting',
       headline: a.title,
-      description: a.metaDescription || a.excerpt,
+      description: trimDesc(a.metaDescription || a.excerpt),
       image: a.featuredImage,
       datePublished: a.publishedAt,
       dateModified: a.updatedAt || a.publishedAt,
@@ -638,7 +667,7 @@ for (const a of articles) {
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
-        '@id': `${baseUrl}/blog/${a.slug}`,
+        '@id': `${baseUrl}/blog/${a.slug}/`,
       },
     },
   });
@@ -647,7 +676,7 @@ for (const a of articles) {
 }
 
 // ----------------------------------------------------------------------------
-// 6. Category Detail Pages (/category/[slug])
+// 6. Category Detail Pages (/category/[slug]/)
 // ----------------------------------------------------------------------------
 for (const c of categories) {
   const catTools = tools.filter(t => t.category === c.slug);
@@ -656,7 +685,7 @@ for (const c of categories) {
   const catContent = `
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
   ${renderBreadcrumb([
-    { label: 'Categories', path: '/categories' },
+    { label: 'Categories', path: '/categories/' },
     { label: c.name },
   ])}
   <div class="py-8 border-b border-slate-200 dark:border-slate-800/80 mb-10 text-center max-w-3xl mx-auto">
@@ -664,7 +693,7 @@ for (const c of categories) {
       ${esc(c.name)}
     </h1>
     <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-      ${esc(c.description)} Browse handpicked software reviews, features, and expert tutorials on AINOVEX.
+      ${esc(c.description)} Browse handpicked software reviews and tutorials on AINOVEX.
     </p>
   </div>
 
@@ -675,6 +704,9 @@ for (const c of categories) {
       ${catTools.map(t => `
       <div class="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 text-center flex flex-col justify-between">
         <div>
+          <div class="w-12 h-12 mx-auto mb-3 rounded-xl overflow-hidden bg-slate-50 dark:bg-slate-800/80 p-1 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center">
+            <img src="${esc(t.icon)}" alt="${esc(t.name)} Logo" class="w-full h-full object-contain" />
+          </div>
           <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">${esc(t.name)}</h3>
           <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">${esc(t.description)}</p>
         </div>
@@ -688,7 +720,7 @@ for (const c of categories) {
     ${catArticles.length ? `
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       ${catArticles.map(a => `
-      <a href="/blog/${a.slug}" class="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm block">
+      <a href="/blog/${a.slug}/" class="p-6 rounded-2xl bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 hover:border-blue-500 shadow-sm block">
         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">${esc(a.title)}</h3>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">${esc(a.excerpt)}</p>
         <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">Read Guide &rarr;</span>
@@ -697,17 +729,19 @@ for (const c of categories) {
   </div>
 </div>`;
 
+  const catDesc = trimDesc(`${c.description} Browse handpicked software reviews and tutorials on AINOVEX.`);
+
   writePage(`category/${c.slug}/index.html`, createPageHtml({
     title: `${c.name} AI Tools & Practical Guides 2026 | AINOVEX`,
-    description: `${c.description} Browse handpicked software reviews, features, and expert tutorials on AINOVEX.`,
-    path: `/category/${c.slug}`,
+    description: catDesc,
+    path: `/category/${c.slug}/`,
     contentHtml: catContent,
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
       name: `${c.name} AI Tools & Guides`,
-      url: `${baseUrl}/category/${c.slug}`,
-      description: c.description,
+      url: `${baseUrl}/category/${c.slug}/`,
+      description: catDesc,
     },
   }));
 }
@@ -754,8 +788,14 @@ const aboutContent = `
 </div>`;
 writePage('about/index.html', createPageHtml({
   title: 'About Us & Editorial Standards | AINOVEX',
-  description: 'Learn about AINOVEX, our mission to simplify artificial intelligence, our rigorous testing standards, and our independent editorial review methodology.',
-  path: '/about',
+  description: 'Learn about AINOVEX, our mission to simplify artificial intelligence, our testing standards, and our independent editorial review methodology.',
+  path: '/about/',
+  contentHtml: aboutContent,
+}));
+writePage('about.html', createPageHtml({
+  title: 'About Us & Editorial Standards | AINOVEX',
+  description: 'Learn about AINOVEX, our mission to simplify artificial intelligence, our testing standards, and our independent editorial review methodology.',
+  path: '/about/',
   contentHtml: aboutContent,
 }));
 
@@ -777,8 +817,14 @@ const contactContent = `
 </div>`;
 writePage('contact/index.html', createPageHtml({
   title: 'Contact AINOVEX | Editorial & Support Team',
-  description: 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or media and partnership inquiries.',
-  path: '/contact',
+  description: 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or partnership inquiries.',
+  path: '/contact/',
+  contentHtml: contactContent,
+}));
+writePage('contact.html', createPageHtml({
+  title: 'Contact AINOVEX | Editorial & Support Team',
+  description: 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or partnership inquiries.',
+  path: '/contact/',
   contentHtml: contactContent,
 }));
 
@@ -799,8 +845,14 @@ const privacyContent = `
 </div>`;
 writePage('privacy/index.html', createPageHtml({
   title: 'Privacy Policy | AINOVEX AI Platform',
-  description: 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain strict data privacy.',
-  path: '/privacy',
+  description: 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain data privacy.',
+  path: '/privacy/',
+  contentHtml: privacyContent,
+}));
+writePage('privacy.html', createPageHtml({
+  title: 'Privacy Policy | AINOVEX AI Platform',
+  description: 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain data privacy.',
+  path: '/privacy/',
   contentHtml: privacyContent,
 }));
 
@@ -819,8 +871,14 @@ const termsContent = `
 </div>`;
 writePage('terms/index.html', createPageHtml({
   title: 'Terms of Service | AINOVEX Platform',
-  description: 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website and directory.',
-  path: '/terms',
+  description: 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website.',
+  path: '/terms/',
+  contentHtml: termsContent,
+}));
+writePage('terms.html', createPageHtml({
+  title: 'Terms of Service | AINOVEX Platform',
+  description: 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website.',
+  path: '/terms/',
   contentHtml: termsContent,
 }));
 
@@ -839,8 +897,14 @@ const editorialContent = `
 </div>`;
 writePage('editorial-policy/index.html', createPageHtml({
   title: 'Editorial Policy & Review Standards | AINOVEX',
-  description: 'Explore AINOVEX strict editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.',
-  path: '/editorial-policy',
+  description: 'Explore AINOVEX editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.',
+  path: '/editorial-policy/',
+  contentHtml: editorialContent,
+}));
+writePage('editorial-policy.html', createPageHtml({
+  title: 'Editorial Policy & Review Standards | AINOVEX',
+  description: 'Explore AINOVEX editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.',
+  path: '/editorial-policy/',
   contentHtml: editorialContent,
 }));
 
@@ -859,8 +923,14 @@ const affiliateContent = `
 </div>`;
 writePage('affiliate-disclosure/index.html', createPageHtml({
   title: 'Affiliate & Monetization Disclosure | AINOVEX',
-  description: 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and editorial integrity.',
-  path: '/affiliate-disclosure',
+  description: 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and integrity.',
+  path: '/affiliate-disclosure/',
+  contentHtml: affiliateContent,
+}));
+writePage('affiliate-disclosure.html', createPageHtml({
+  title: 'Affiliate & Monetization Disclosure | AINOVEX',
+  description: 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and integrity.',
+  path: '/affiliate-disclosure/',
   contentHtml: affiliateContent,
 }));
 
@@ -876,14 +946,14 @@ const notFoundContent = `
   </p>
   <div class="flex flex-wrap items-center justify-center gap-3">
     <a href="/" class="px-6 py-2.5 rounded-full bg-blue-600 text-white font-semibold text-sm hover:bg-blue-500">Return to Homepage</a>
-    <a href="/tools" class="px-6 py-2.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm">Explore AI Tools</a>
-    <a href="/blog" class="px-6 py-2.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm">Read Blog</a>
+    <a href="/tools/" class="px-6 py-2.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm">Explore AI Tools</a>
+    <a href="/blog/" class="px-6 py-2.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-sm">Read Blog</a>
   </div>
 </div>`;
 const notFoundHtml = createPageHtml({
   title: 'Page Not Found (404) | AINOVEX',
   description: 'The page you requested could not be found. Explore top AI tools, software reviews, and guides on AINOVEX.',
-  path: '/404',
+  path: '/404/',
   contentHtml: notFoundContent,
 });
 writePage('404.html', notFoundHtml);

@@ -1,18 +1,18 @@
 {
   "siteTitle": "AINOVEX",
   "siteTagline": "Discover the Best AI Tools & Resources",
-  "siteDescription": "Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.",
+  "siteDescription": "Discover the best AI tools, software reviews, and guides on AINOVEX. Boost productivity and work smarter with curated artificial intelligence.",
   "authorName": "Md Shamim",
   "contactEmail": "mdshamimhossaincom129@gmail.com",
   "productionUrl": "https://ai-novex.netlify.app",
   "githubRepo": "myblog337/ainovex",
   "githubBranch": "main",
   "socialLinks": {
-    "facebook": "https://facebook.com",
+    "facebook": "https://www.facebook.com",
     "twitter": "https://x.com",
-    "youtube": "https://youtube.com",
-    "linkedin": "https://linkedin.com",
-    "pinterest": "https://pinterest.com",
+    "youtube": "https://www.youtube.com",
+    "linkedin": "https://www.linkedin.com",
+    "pinterest": "https://www.pinterest.com",
     "rss": "/rss.xml"
   },
   "defaultOgImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80",

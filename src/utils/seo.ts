@@ -19,16 +19,24 @@ export function applySeo(opts: {
   type?: 'website' | 'article';
 }) {
   const base = opts.baseUrl.replace(/\/+$/, '');
-  const url = base + (opts.path === '/' ? '/' : opts.path.split('?')[0]);
+  const cleanPath = opts.path.split('?')[0];
+  // Standardize canonical and og:url to trailing slash (matching direct 200 Netlify static routes)
+  const formattedPath = cleanPath === '/' ? '/' : (cleanPath.endsWith('/') ? cleanPath : cleanPath + '/');
+  const url = `${base}${formattedPath}`;
+
+  // Enforce maximum 155 characters for meta descriptions
+  const safeDesc = opts.description && opts.description.length > 155
+    ? opts.description.slice(0, 152).trim() + '...'
+    : opts.description;
 
   document.title = opts.title;
-  setMeta('meta[name="description"]', 'name', 'description', opts.description);
+  setMeta('meta[name="description"]', 'name', 'description', safeDesc);
   setMeta('meta[property="og:title"]', 'property', 'og:title', opts.title);
-  setMeta('meta[property="og:description"]', 'property', 'og:description', opts.description);
+  setMeta('meta[property="og:description"]', 'property', 'og:description', safeDesc);
   setMeta('meta[property="og:url"]', 'property', 'og:url', url);
   setMeta('meta[property="og:type"]', 'property', 'og:type', opts.type || 'website');
   setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', opts.title);
-  setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', opts.description);
+  setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', safeDesc);
   if (opts.image) {
     setMeta('meta[property="og:image"]', 'property', 'og:image', opts.image);
     setMeta('meta[name="twitter:image"]', 'name', 'twitter:image', opts.image);

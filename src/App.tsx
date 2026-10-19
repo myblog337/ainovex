@@ -105,6 +105,13 @@ function AppContent() {
     }
   };
 
+  const normalizePath = (p: string) => {
+    const clean = p.split('?')[0].replace(/\/+$/, '');
+    return clean === '' ? '/' : clean;
+  };
+
+  const normPath = normalizePath(currentPath);
+
   // Keep <title>, description, canonical and Open Graph tags in sync with the route
   useEffect(() => {
     const base = siteSettings.productionUrl || 'https://ai-novex.netlify.app';
@@ -118,17 +125,17 @@ function AppContent() {
     let noindex = false;
     let type: 'website' | 'article' = 'website';
 
-    if (currentPath === '/') {
+    if (normPath === '/') {
       title = 'AINOVEX - AI Tools & Technology Platform';
-      description = 'Discover the best AI tools, in-depth software reviews, and practical guides on AINOVEX. Boost your productivity and work smarter with curated artificial intelligence.';
-    } else if (currentPath === '/tools' || currentPath.startsWith('/tools?')) {
+      description = 'Discover the best AI tools, software reviews, and guides on AINOVEX. Boost productivity and work smarter with curated artificial intelligence.';
+    } else if (normPath === '/tools') {
       title = 'Best AI Tools Directory & Software Reviews 2026 | AINOVEX';
       description = 'Browse and compare the top artificial intelligence tools for writing, image creation, video, coding, and productivity. Find the best software for your needs.';
-    } else if (currentPath === '/blog') {
+    } else if (normPath === '/blog') {
       title = 'AI Insights, Tutorials & Technology Guides | AINOVEX';
       description = 'Explore actionable AI tutorials, practical workflows, tool comparisons, and tech guides from the AINOVEX editorial team. Master modern AI applications today.';
-    } else if (currentPath.startsWith('/blog/')) {
-      const slug = currentPath.replace('/blog/', '');
+    } else if (normPath.startsWith('/blog/')) {
+      const slug = normPath.replace('/blog/', '').replace(/\/$/, '');
       const found = articles.find((a) => a.slug === slug);
       if (found) {
         title = found.metaTitle || `${found.title} | AINOVEX`;
@@ -139,11 +146,11 @@ function AppContent() {
         title = 'Article Not Found | AINOVEX';
         noindex = true;
       }
-    } else if (currentPath === '/categories') {
+    } else if (normPath === '/categories') {
       title = 'Browse AI Categories & Topics | AINOVEX';
       description = 'Explore specialized AI software categories from writing and image generation to coding and productivity. Find the right tools for your specific workflow.';
-    } else if (currentPath.startsWith('/category/')) {
-      const slug = currentPath.replace('/category/', '');
+    } else if (normPath.startsWith('/category/')) {
+      const slug = normPath.replace('/category/', '').replace(/\/$/, '');
       const found = categories.find((c) => c.slug === slug);
       if (found) {
         title = `${found.name} AI Tools & Practical Guides 2026 | AINOVEX`;
@@ -153,38 +160,39 @@ function AppContent() {
         title = 'Category Not Found | AINOVEX';
         noindex = true;
       }
-    } else if (currentPath === '/about') {
+    } else if (normPath === '/about') {
       title = 'About Us & Editorial Standards | AINOVEX';
-      description = 'Learn about AINOVEX, our mission to simplify artificial intelligence, our rigorous testing standards, and our independent editorial review methodology.';
-    } else if (currentPath === '/contact') {
+      description = 'Learn about AINOVEX, our mission to simplify artificial intelligence, our testing standards, and our independent editorial review methodology.';
+    } else if (normPath === '/contact') {
       title = 'Contact AINOVEX | Editorial & Support Team';
-      description = 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or media and partnership inquiries.';
-    } else if (currentPath === '/privacy') {
+      description = 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or partnership inquiries.';
+    } else if (normPath === '/privacy') {
       title = 'Privacy Policy | AINOVEX AI Platform';
-      description = 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain strict data privacy.';
-    } else if (currentPath === '/terms') {
+      description = 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain data privacy.';
+    } else if (normPath === '/terms') {
       title = 'Terms of Service | AINOVEX Platform';
-      description = 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website and directory.';
-    } else if (currentPath === '/editorial-policy') {
+      description = 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website.';
+    } else if (normPath === '/editorial-policy') {
       title = 'Editorial Policy & Review Standards | AINOVEX';
-      description = 'Explore AINOVEX strict editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.';
-    } else if (currentPath === '/affiliate-disclosure') {
+      description = 'Explore AINOVEX editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.';
+    } else if (normPath === '/affiliate-disclosure') {
       title = 'Affiliate & Monetization Disclosure | AINOVEX';
-      description = 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and editorial integrity.';
+      description = 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and integrity.';
     } else {
-      // Unknown route: the SPA still answers HTTP 200, so tell crawlers not to index it.
+      // Unknown route: tell crawlers not to index it
       title = 'Page Not Found | AINOVEX';
       description = 'The page you are looking for does not exist. Browse our AI tools directory, tutorials, and category archives on AINOVEX.';
       noindex = true;
     }
 
-    applySeo({ title, description, path: currentPath, baseUrl: base, image, noindex, type });
-  }, [currentPath, articles, categories, siteSettings, dataLoaded, dataOk]);
+    const canonicalPath = normPath === '/' ? '/' : `${normPath}/`;
+    applySeo({ title, description, path: canonicalPath, baseUrl: base, image, noindex, type });
+  }, [normPath, articles, categories, siteSettings, dataLoaded, dataOk]);
 
   // Public View Router
   let viewContent: React.ReactNode = null;
 
-  if (currentPath === '/') {
+  if (normPath === '/') {
     viewContent = (
       <HomeView
         categories={categories}
@@ -194,7 +202,7 @@ function AppContent() {
         onSelectTool={(tool) => setSelectedToolModal(tool)}
       />
     );
-  } else if (currentPath === '/tools' || currentPath.startsWith('/tools?')) {
+  } else if (normPath === '/tools') {
     const urlParams = new URLSearchParams(window.location.search);
     const q = urlParams.get('q') || '';
     viewContent = (
@@ -207,17 +215,17 @@ function AppContent() {
         onSelectToolModal={setSelectedToolModal}
       />
     );
-  } else if (currentPath === '/blog') {
+  } else if (normPath === '/blog') {
     viewContent = (
       <BlogView
         articles={articles}
         categories={categories}
-        onSelectArticle={(slug) => navigate(`/blog/${slug}`)}
+        onSelectArticle={(slug) => navigate(`/blog/${slug}/`)}
         onNavigate={navigate}
       />
     );
-  } else if (currentPath.startsWith('/blog/')) {
-    const slug = currentPath.replace('/blog/', '');
+  } else if (normPath.startsWith('/blog/')) {
+    const slug = normPath.replace('/blog/', '').replace(/\/$/, '');
     viewContent = (
       <ArticleDetailView
         slug={slug}
@@ -225,16 +233,16 @@ function AppContent() {
         allArticles={articles}
       />
     );
-  } else if (currentPath === '/categories') {
+  } else if (normPath === '/categories') {
     viewContent = (
       <CategoriesView
         categories={categories}
-        onSelectCategory={(slug) => navigate(`/category/${slug}`)}
+        onSelectCategory={(slug) => navigate(`/category/${slug}/`)}
         onNavigate={navigate}
       />
     );
-  } else if (currentPath.startsWith('/category/')) {
-    const slug = currentPath.replace('/category/', '');
+  } else if (normPath.startsWith('/category/')) {
+    const slug = normPath.replace('/category/', '').replace(/\/$/, '');
     viewContent = (
       <CategoryDetailView
         slug={slug}
@@ -243,20 +251,20 @@ function AppContent() {
         articles={articles}
         onNavigate={navigate}
         onSelectTool={(tool) => setSelectedToolModal(tool)}
-        onSelectArticle={(slug) => navigate(`/blog/${slug}`)}
+        onSelectArticle={(slug) => navigate(`/blog/${slug}/`)}
       />
     );
-  } else if (currentPath === '/about') {
+  } else if (normPath === '/about') {
     viewContent = <AboutView onNavigate={navigate} />;
-  } else if (currentPath === '/contact') {
+  } else if (normPath === '/contact') {
     viewContent = <ContactView onNavigate={navigate} />;
-  } else if (currentPath === '/privacy') {
+  } else if (normPath === '/privacy') {
     viewContent = <LegalView page="privacy" onNavigate={navigate} />;
-  } else if (currentPath === '/terms') {
+  } else if (normPath === '/terms') {
     viewContent = <LegalView page="terms" onNavigate={navigate} />;
-  } else if (currentPath === '/editorial-policy') {
+  } else if (normPath === '/editorial-policy') {
     viewContent = <LegalView page="editorial" onNavigate={navigate} />;
-  } else if (currentPath === '/affiliate-disclosure') {
+  } else if (normPath === '/affiliate-disclosure') {
     viewContent = <LegalView page="affiliate" onNavigate={navigate} />;
   } else {
     // 404 Not Found fallback
@@ -302,17 +310,17 @@ function AppContent() {
         onSelectTool={(tool) => {
           setSelectedToolModal(tool);
           setIsSearchOpen(false);
-          if (currentPath !== '/tools') {
-            navigate('/tools');
+          if (normPath !== '/tools') {
+            navigate('/tools/');
           }
         }}
         onSelectArticle={(slug) => {
           setIsSearchOpen(false);
-          navigate(`/blog/${slug}`);
+          navigate(`/blog/${slug}/`);
         }}
         onSelectCategory={(slug) => {
           setIsSearchOpen(false);
-          navigate(`/category/${slug}`);
+          navigate(`/category/${slug}/`);
         }}
       />
         </Suspense>

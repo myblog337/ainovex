@@ -30,11 +30,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
 
   const navLinks = [
     { label: 'Home', path: '/' },
-    { label: 'AI Tools', path: '/tools' },
-    { label: 'Categories', path: '/categories' },
-    { label: 'Blog', path: '/blog' },
-    { label: 'About', path: '/about' },
-    { label: 'Contact', path: '/contact' },
+    { label: 'AI Tools', path: '/tools/' },
+    { label: 'Categories', path: '/categories/' },
+    { label: 'Blog', path: '/blog/' },
+    { label: 'About', path: '/about/' },
+    { label: 'Contact', path: '/contact/' },
   ];
 
   const handleLinkClick = (path: string) => {
@@ -70,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
         {/* Desktop Navigation Links */}
         <nav aria-label="Main Navigation" className="hidden md:flex items-center gap-7 text-sm font-medium">
           {navLinks.map((link) => {
-            const isActive = currentPath === link.path;
+            const isActive = currentPath.replace(/\/+$/, '') === link.path.replace(/\/+$/, '');
             return (
               <a
                 key={link.path}
@@ -152,10 +152,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
 
           {/* Explore Tools CTA Button */}
           <a
-            href="/tools"
+            href="/tools/"
             onClick={(e) => {
               e.preventDefault();
-              handleLinkClick('/tools');
+              handleLinkClick('/tools/');
             }}
             className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
@@ -186,7 +186,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
                 handleLinkClick(link.path);
               }}
               className={`block w-full text-left px-3 py-2.5 rounded-lg text-base font-medium transition-colors ${
-                currentPath === link.path
+                currentPath.replace(/\/+$/, '') === link.path.replace(/\/+$/, '')
                   ? 'bg-blue-50 text-blue-600 dark:bg-blue-600/20 dark:text-blue-400 font-semibold'
                   : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/50'
               }`}
@@ -237,10 +237,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSearch, currentPath, onNav
             </div>
 
             <a
-              href="/tools"
+              href="/tools/"
               onClick={(e) => {
                 e.preventDefault();
-                handleLinkClick('/tools');
+                handleLinkClick('/tools/');
               }}
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30"
             >
