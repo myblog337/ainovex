@@ -65,10 +65,10 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
         <h2 className="text-2xl font-bold text-white mb-2">Article Not Found</h2>
         <p className="text-sm text-slate-400 mb-6">The requested article could not be located.</p>
         <a
-          href="/blog"
+          href="/blog/"
           onClick={(e) => {
             e.preventDefault();
-            onNavigate('/blog');
+            onNavigate('/blog/');
           }}
           className="px-5 py-2.5 rounded-full bg-blue-600 text-white text-sm font-semibold hover:bg-blue-500 inline-block"
         >

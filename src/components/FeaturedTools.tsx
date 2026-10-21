@@ -91,7 +91,7 @@ export const FeaturedTools: React.FC<FeaturedToolsProps> = ({
             <a
               href={tool.url}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
               className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800/90 dark:border dark:border-slate-700/60 dark:hover:bg-blue-600 transition-all shadow-sm"
             >

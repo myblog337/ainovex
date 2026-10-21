@@ -273,11 +273,12 @@ const renderBreadcrumb = (crumbs) => `
   </ol>
 </nav>`;
 
-function createPageHtml({ title, description, path: pagePath, image, ogType = 'website', jsonLd, contentHtml }) {
+function createPageHtml({ title, description, path: pagePath, image, ogType = 'website', jsonLd, contentHtml, noindex = false }) {
   const normPath = pagePath === '/' ? '/' : (pagePath.endsWith('/') ? pagePath : pagePath + '/');
   const url = `${baseUrl}${normPath}`;
   const ogImg = image || defaultOgImage;
   const safeDesc = trimDesc(description);
+  const is404 = noindex || pagePath === '/404/' || pagePath === '/404';
 
   let html = baseHtml;
 
@@ -287,17 +288,26 @@ function createPageHtml({ title, description, path: pagePath, image, ogType = 'w
   // Replace/inject Description
   html = html.replace(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${esc(safeDesc)}" />`);
 
-  // Replace/inject Canonical (always points to the direct 200 URL with trailing slash)
-  if (/<link\s+rel=["']canonical["'][^>]*>/i.test(html)) {
-    html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${esc(url)}" />`);
+  if (is404) {
+    // 404 pages MUST have noindex and MUST NOT have a canonical tag
+    html = html.replace(/<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="noindex, follow" />`);
+    html = html.replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '');
+    html = html.replace(/<meta\s+property=["']og:url["'][^>]*>\s*/gi, '');
   } else {
-    html = html.replace('</head>', `    <link rel="canonical" href="${esc(url)}" />\n  </head>`);
+    // Ensure index, follow
+    html = html.replace(/<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />`);
+    // Replace/inject Canonical (always points to the direct 200 URL with trailing slash)
+    if (/<link\s+rel=["']canonical["'][^>]*>/i.test(html)) {
+      html = html.replace(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${esc(url)}" />`);
+    } else {
+      html = html.replace('</head>', `    <link rel="canonical" href="${esc(url)}" />\n  </head>`);
+    }
+    html = html.replace(/<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${esc(url)}" />`);
   }
 
   // Replace OpenGraph tags
   html = html.replace(/<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${esc(title)}" />`);
   html = html.replace(/<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${esc(safeDesc)}" />`);
-  html = html.replace(/<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${esc(url)}" />`);
   html = html.replace(/<meta\s+property=["']og:type["'][^>]*>/i, `<meta property="og:type" content="${ogType}" />`);
   html = html.replace(/<meta\s+property=["']og:image["'][^>]*>/i, `<meta property="og:image" content="${esc(ogImg)}" />`);
 
@@ -343,10 +353,10 @@ const homeContent = `
   </p>
   <div class="flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-8">
     <span class="font-semibold text-amber-500 dark:text-amber-400">Trending:</span>
-    <a href="/tools/?q=ChatGPT" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">ChatGPT</a>
-    <a href="/tools/?q=Image" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">AI Image Generator</a>
-    <a href="/tools/?q=Video" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Video Editing</a>
-    <a href="/tools/?q=Productivity" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Productivity</a>
+    <a href="/category/ai-writing/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">ChatGPT</a>
+    <a href="/category/image-generation/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">AI Image Generator</a>
+    <a href="/category/video-audio/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Video Editing</a>
+    <a href="/category/productivity/" class="px-3 py-1 rounded-full text-xs font-medium bg-slate-100 hover:bg-blue-50 border border-slate-200 text-slate-700 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700/60 dark:text-slate-300 dark:hover:text-blue-400">Productivity</a>
   </div>
 </section>
 
@@ -382,7 +392,7 @@ const homeContent = `
         <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">${esc(t.name)}</h3>
         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">${esc(t.description)}</p>
       </div>
-      <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-4 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
+      <a href="${esc(t.url)}" target="_blank" rel="nofollow noopener noreferrer" class="w-full py-2 px-4 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
     </div>`).join('')}
   </div>
 </section>
@@ -460,7 +470,7 @@ const toolsContent = `
           ${(t.tags || []).map(tag => `<span class="px-2.5 py-0.5 rounded-full text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${esc(tag)}</span>`).join('')}
         </div>
       </div>
-      <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
+      <a href="${esc(t.url)}" target="_blank" rel="nofollow noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
     </div>`).join('')}
   </div>
 </div>`;
@@ -479,7 +489,6 @@ const toolsPageHtml = createPageHtml({
   },
 });
 writePage('tools/index.html', toolsPageHtml);
-writePage('tools.html', toolsPageHtml);
 
 // ----------------------------------------------------------------------------
 // 3. Blog Archive (/blog/)
@@ -527,7 +536,6 @@ const blogPageHtml = createPageHtml({
   },
 });
 writePage('blog/index.html', blogPageHtml);
-writePage('blog.html', blogPageHtml);
 
 // ----------------------------------------------------------------------------
 // 4. Categories Directory (/categories/)
@@ -567,7 +575,6 @@ const categoriesPageHtml = createPageHtml({
   },
 });
 writePage('categories/index.html', categoriesPageHtml);
-writePage('categories.html', categoriesPageHtml);
 
 // ----------------------------------------------------------------------------
 // 5. Individual Article Pages (/blog/[slug]/)
@@ -710,7 +717,7 @@ for (const c of categories) {
           <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1">${esc(t.name)}</h3>
           <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">${esc(t.description)}</p>
         </div>
-        <a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer" class="w-full py-2 px-3 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
+        <a href="${esc(t.url)}" target="_blank" rel="nofollow noopener noreferrer" class="w-full py-2 px-3 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 transition-colors inline-block">Visit Tool &rarr;</a>
       </div>`).join('')}
     </div>` : `<p class="text-sm text-slate-500">More tools are being reviewed for this category.</p>`}
   </div>
@@ -792,12 +799,6 @@ writePage('about/index.html', createPageHtml({
   path: '/about/',
   contentHtml: aboutContent,
 }));
-writePage('about.html', createPageHtml({
-  title: 'About Us & Editorial Standards | AINOVEX',
-  description: 'Learn about AINOVEX, our mission to simplify artificial intelligence, our testing standards, and our independent editorial review methodology.',
-  path: '/about/',
-  contentHtml: aboutContent,
-}));
 
 const contactContent = `
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -816,12 +817,6 @@ const contactContent = `
   </div>
 </div>`;
 writePage('contact/index.html', createPageHtml({
-  title: 'Contact AINOVEX | Editorial & Support Team',
-  description: 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or partnership inquiries.',
-  path: '/contact/',
-  contentHtml: contactContent,
-}));
-writePage('contact.html', createPageHtml({
   title: 'Contact AINOVEX | Editorial & Support Team',
   description: 'Contact the AINOVEX editorial team for software recommendations, directory submissions, editorial corrections, or partnership inquiries.',
   path: '/contact/',
@@ -849,12 +844,6 @@ writePage('privacy/index.html', createPageHtml({
   path: '/privacy/',
   contentHtml: privacyContent,
 }));
-writePage('privacy.html', createPageHtml({
-  title: 'Privacy Policy | AINOVEX AI Platform',
-  description: 'Read the official AINOVEX Privacy Policy. Learn how we safeguard your personal information, handle essential cookies, and maintain data privacy.',
-  path: '/privacy/',
-  contentHtml: privacyContent,
-}));
 
 const termsContent = `
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -870,12 +859,6 @@ const termsContent = `
   </div>
 </div>`;
 writePage('terms/index.html', createPageHtml({
-  title: 'Terms of Service | AINOVEX Platform',
-  description: 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website.',
-  path: '/terms/',
-  contentHtml: termsContent,
-}));
-writePage('terms.html', createPageHtml({
   title: 'Terms of Service | AINOVEX Platform',
   description: 'Review the AINOVEX Terms of Service. Understand the rules, guidelines, disclaimers, and legal agreements governing the use of our website.',
   path: '/terms/',
@@ -901,12 +884,6 @@ writePage('editorial-policy/index.html', createPageHtml({
   path: '/editorial-policy/',
   contentHtml: editorialContent,
 }));
-writePage('editorial-policy.html', createPageHtml({
-  title: 'Editorial Policy & Review Standards | AINOVEX',
-  description: 'Explore AINOVEX editorial policy, review guidelines, testing benchmarks, and independence standards for recommending artificial intelligence tools.',
-  path: '/editorial-policy/',
-  contentHtml: editorialContent,
-}));
 
 const affiliateContent = `
 <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -922,12 +899,6 @@ const affiliateContent = `
   </div>
 </div>`;
 writePage('affiliate-disclosure/index.html', createPageHtml({
-  title: 'Affiliate & Monetization Disclosure | AINOVEX',
-  description: 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and integrity.',
-  path: '/affiliate-disclosure/',
-  contentHtml: affiliateContent,
-}));
-writePage('affiliate-disclosure.html', createPageHtml({
   title: 'Affiliate & Monetization Disclosure | AINOVEX',
   description: 'Read the AINOVEX affiliate and advertising disclosure. Learn how our site remains free for readers through transparent monetization and integrity.',
   path: '/affiliate-disclosure/',
@@ -955,6 +926,7 @@ const notFoundHtml = createPageHtml({
   description: 'The page you requested could not be found. Explore top AI tools, software reviews, and guides on AINOVEX.',
   path: '/404/',
   contentHtml: notFoundContent,
+  noindex: true,
 });
 writePage('404.html', notFoundHtml);
 

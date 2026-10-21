@@ -87,11 +87,21 @@
   to = "/affiliate-disclosure/"
   status = 301
 
-# ---- SPA fallback (must be last) ----
+[[redirects]]
+  from = "/category/:slug"
+  to = "/category/:slug/"
+  status = 301
+
+[[redirects]]
+  from = "/blog/:slug"
+  to = "/blog/:slug/"
+  status = 301
+
+# ---- 404 Fallback (serves custom 404 page with real HTTP 404 status code) ----
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
 
 # Global security & SEO headers (enforces single-hop HTTPS with HSTS)
 [[headers]]
@@ -148,3 +158,15 @@
   for = "/favicon.svg"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Content-Type = "image/x-icon"
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/404.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, follow"
+    Cache-Control = "no-cache, no-store, must-revalidate"

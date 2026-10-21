@@ -2,7 +2,7 @@
 
 AINOVEX is a high-performance, SEO-optimized AI tools directory, tutorials, and technology blog built for readers worldwide.
 
-- **Production Domain:** [https://ainovex.pages.dev](https://ainovex.pages.dev)
+- **Production Domain:** [https://ai-novex.netlify.app](https://ai-novex.netlify.app)
 - **GitHub Repository:** [https://github.com/myblog337/ainovex](https://github.com/myblog337/ainovex)
 - **Target Branch:** `main`
 - **Lead Editor & Author:** Md Shamim (`mdshamimhossaincom129@gmail.com`)
@@ -17,10 +17,10 @@ AINOVEX is a high-performance, SEO-optimized AI tools directory, tutorials, and 
               git push origin main
                      │
                      ▼
-        Cloudflare Pages CI/CD  (npm run build → dist)
+         Netlify CI/CD  (npm run build → dist)
                      │
                      ▼
-        https://ainovex.pages.dev
+         https://ai-novex.netlify.app
 ```
 
 The site is fully read-only: `functions/api/[[path]].ts` only serves the built content
@@ -94,7 +94,7 @@ If an erroneous commit is pushed:
    git revert <commit-sha>
    git push origin main
    ```
-4. Cloudflare Pages will detect the revert commit and automatically redeploy the previous stable build to `https://ainovex.pages.dev`.
+4. Netlify will detect the revert commit and automatically redeploy the previous stable build to `https://ai-novex.netlify.app`.
 
 ---
 

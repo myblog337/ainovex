@@ -35,7 +35,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
     },
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://ai-novex.netlify.app/tools?q={search_term_string}',
+      target: 'https://ai-novex.netlify.app/tools/?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };
@@ -46,8 +46,8 @@ export const HomeView: React.FC<HomeViewProps> = ({
 
       {/* Hero with glowing orbital sphere */}
       <Hero
-        onSearch={(query) => onNavigate(`/tools?q=${encodeURIComponent(query)}`)}
-        onTagClick={(tag) => onNavigate(`/tools?q=${encodeURIComponent(tag)}`)}
+        onSearch={(query) => onNavigate(`/tools/?q=${encodeURIComponent(query)}`)}
+        onTagClick={(tag) => onNavigate(`/tools/?q=${encodeURIComponent(tag)}`)}
       />
 
       {/* Browse by Category */}

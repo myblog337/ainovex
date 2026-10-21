@@ -57,7 +57,7 @@ export const CategoriesView: React.FC<CategoriesViewProps> = ({
           return (
             <a
               key={cat.id || cat.slug}
-              href={`/category/${cat.slug}`}
+              href={`/category/${cat.slug}/`}
               onClick={(e) => {
                 e.preventDefault();
                 onSelectCategory(cat.slug);

@@ -157,18 +157,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 { name: 'LinkedIn', label: 'in', href: 'https://www.linkedin.com' },
                 { name: 'Pinterest', label: 'P', href: 'https://www.pinterest.com' },
                 { name: 'RSS', label: 'ツ', href: '/rss.xml' },
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.name}
-                  className="w-7 h-7 rounded-full bg-slate-200 hover:bg-blue-600 text-slate-700 hover:text-white dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-blue-600 dark:hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow-sm"
-                >
-                  {social.label}
-                </a>
-              ))}
+              ].map((social) => {
+                const isExternal = social.href.startsWith('http');
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'nofollow noopener noreferrer' : undefined}
+                    aria-label={social.name}
+                    className="w-7 h-7 rounded-full bg-slate-200 hover:bg-blue-600 text-slate-700 hover:text-white dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-blue-600 dark:hover:text-white flex items-center justify-center text-xs font-bold transition-all shadow-sm"
+                  >
+                    {social.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

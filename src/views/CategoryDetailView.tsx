@@ -100,7 +100,7 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
                 <a
                   href={tool.url}
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="nofollow noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
                   className="w-full inline-flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-semibold text-white bg-slate-900 hover:bg-blue-600 dark:bg-slate-800 dark:hover:bg-blue-600 transition-colors shadow-sm"
                 >
@@ -129,7 +129,7 @@ export const CategoryDetailView: React.FC<CategoryDetailViewProps> = ({
             {catArticles.map((article) => (
               <a
                 key={article.id}
-                href={`/blog/${article.slug}`}
+                href={`/blog/${article.slug}/`}
                 onClick={(e) => {
                   e.preventDefault();
                   onSelectArticle(article.slug);
