@@ -682,6 +682,22 @@ for (const a of articles) {
   writePage(`blog/${a.slug}/index.html`, articleHtml);
 }
 
+// Write static redirect fallback page for the proposed short slug
+const shortSlugRedirectHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <link rel="canonical" href="${baseUrl}/blog/best-ai-tools-bulk-product-catalog-enrichment/">
+  <meta http-equiv="refresh" content="0; url=${baseUrl}/blog/best-ai-tools-bulk-product-catalog-enrichment/">
+  <meta name="robots" content="noindex, follow">
+</head>
+<body>
+  <p>Redirecting to <a href="${baseUrl}/blog/best-ai-tools-bulk-product-catalog-enrichment/">Best AI Tools for Bulk Product Catalog Enrichment in 2026</a>...</p>
+</body>
+</html>`;
+writePage('best-ai-tools-bulk-product-catalog-enrichment/index.html', shortSlugRedirectHtml);
+
 // ----------------------------------------------------------------------------
 // 6. Category Detail Pages (/category/[slug]/)
 // ----------------------------------------------------------------------------

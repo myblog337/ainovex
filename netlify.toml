@@ -97,6 +97,16 @@
   to = "/blog/:slug/"
   status = 301
 
+[[redirects]]
+  from = "/best-ai-tools-bulk-product-catalog-enrichment"
+  to = "/blog/best-ai-tools-bulk-product-catalog-enrichment/"
+  status = 301
+
+[[redirects]]
+  from = "/best-ai-tools-bulk-product-catalog-enrichment/"
+  to = "/blog/best-ai-tools-bulk-product-catalog-enrichment/"
+  status = 301
+
 # ---- 404 Fallback (serves custom 404 page with real HTTP 404 status code) ----
 [[redirects]]
   from = "/*"

@@ -198,6 +198,11 @@ app.get('/api/health', (_req: Request, res: Response) => {
   });
 });
 
+// Proposed short URL redirect to canonical blog route
+app.get(['/best-ai-tools-bulk-product-catalog-enrichment', '/best-ai-tools-bulk-product-catalog-enrichment/'], (_req: Request, res: Response) => {
+  res.redirect(301, '/blog/best-ai-tools-bulk-product-catalog-enrichment/');
+});
+
 // ----------------------------------------------------
 // VITE DEV MIDDLEWARE OR PRODUCTION STATIC SERVER
 // ----------------------------------------------------

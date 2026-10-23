@@ -107,10 +107,19 @@ function AppContent() {
 
   const normalizePath = (p: string) => {
     const clean = p.split('?')[0].replace(/\/+$/, '');
+    if (clean === '/best-ai-tools-bulk-product-catalog-enrichment') {
+      return '/blog/best-ai-tools-bulk-product-catalog-enrichment';
+    }
     return clean === '' ? '/' : clean;
   };
 
   const normPath = normalizePath(currentPath);
+
+  useEffect(() => {
+    if (window.location.pathname.startsWith('/best-ai-tools-bulk-product-catalog-enrichment')) {
+      window.history.replaceState({}, '', '/blog/best-ai-tools-bulk-product-catalog-enrichment/');
+    }
+  }, []);
 
   // Keep <title>, description, canonical and Open Graph tags in sync with the route
   useEffect(() => {
