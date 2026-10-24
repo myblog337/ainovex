@@ -273,7 +273,7 @@ const renderBreadcrumb = (crumbs) => `
   </ol>
 </nav>`;
 
-function createPageHtml({ title, description, path: pagePath, image, ogType = 'website', jsonLd, contentHtml, noindex = false }) {
+function createPageHtml({ title, description, path: pagePath, image, ogType = 'website', jsonLd, contentHtml, noindex = false, preloadImage = null }) {
   const normPath = pagePath === '/' ? '/' : (pagePath.endsWith('/') ? pagePath : pagePath + '/');
   const url = `${baseUrl}${normPath}`;
   const ogImg = image || defaultOgImage;
@@ -315,6 +315,14 @@ function createPageHtml({ title, description, path: pagePath, image, ogType = 'w
   html = html.replace(/<meta\s+name=["']twitter:title["'][^>]*>/i, `<meta name="twitter:title" content="${esc(title)}" />`);
   html = html.replace(/<meta\s+name=["']twitter:description["'][^>]*>/i, `<meta name="twitter:description" content="${esc(safeDesc)}" />`);
   html = html.replace(/<meta\s+name=["']twitter:image["'][^>]*>/i, `<meta name="twitter:image" content="${esc(ogImg)}" />`);
+
+  // Preload LCP hero/featured image if specified
+  if (preloadImage) {
+    const p600 = preloadImage.replace('w=1200', 'w=600');
+    const p900 = preloadImage.replace('w=1200', 'w=900');
+    const imgPreloadTag = `    <link rel="preload" as="image" href="${esc(p900)}" fetchpriority="high" imagesrcset="${esc(p600)} 600w, ${esc(p900)} 900w, ${esc(preloadImage)} 1200w" imagesizes="(max-width: 640px) 100vw, 896px">\n`;
+    html = html.replace('</head>', `${imgPreloadTag}  </head>`);
+  }
 
   // Inject JSON-LD Schema
   if (jsonLd) {
@@ -616,8 +624,8 @@ for (const a of articles) {
       <span>${esc(a.readingTime || '5 min read')}</span>
     </div>
   </div>
-  ${a.featuredImage ? `<div class="relative aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800"><img src="${esc(a.featuredImage)}" alt="${esc(a.imageAlt || a.title)}" class="w-full h-full object-cover" /></div>` : ''}
-  <div class="article-content mb-12">
+  ${a.featuredImage ? `<div class="relative aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800"><img src="${esc(a.featuredImage)}" srcset="${esc(a.featuredImage.replace('w=1200', 'w=600'))} 600w, ${esc(a.featuredImage.replace('w=1200', 'w=900'))} 900w, ${esc(a.featuredImage)} 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px" alt="${esc(a.imageAlt || a.title)}" width="1200" height="675" fetchpriority="high" decoding="async" class="w-full h-full object-cover" /></div>` : ''}
+  <div id="article-content-body" class="article-content mb-12">
     ${bodyHtml}
   </div>
   ${(a.tags && a.tags.length) ? `
@@ -650,6 +658,7 @@ for (const a of articles) {
     description: a.metaDescription || a.excerpt,
     path: `/blog/${a.slug}/`,
     image: a.featuredImage,
+    preloadImage: a.featuredImage,
     ogType: 'article',
     contentHtml: articleContent,
     jsonLd: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Share2, Check, ArrowLeft, Tag, BookOpen, User } from 'lucide-react';
+import { Calendar, Clock, Share2, Check, Tag } from 'lucide-react';
 import { renderMarkdown } from '../utils/markdown';
 import { Article } from '../types';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -16,20 +16,46 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
   onNavigate,
   allArticles,
 }) => {
-  const [article, setArticle] = useState<Article | null>(null);
-  const [contentHtml, setContentHtml] = useState<string>('');
+  // Read any pre-rendered HTML already present in the DOM from static postbuild
+  const getPreRenderedHtml = () => {
+    if (typeof document !== 'undefined') {
+      const el = document.getElementById('article-content-body');
+      if (el && el.innerHTML.trim().length > 0) return el.innerHTML;
+      const generic = document.querySelector('.article-content');
+      if (generic && generic.innerHTML.trim().length > 0) return generic.innerHTML;
+    }
+    return '';
+  };
+
+  const initialArticle = allArticles.find((a) => a.slug === slug) || null;
+  const initialHtml = getPreRenderedHtml();
+
+  const [article, setArticle] = useState<Article | null>(initialArticle);
+  const [contentHtml, setContentHtml] = useState<string>(initialHtml);
   const [copied, setCopied] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    // If pre-rendered HTML or known article already exists, NEVER display a blank loading spinner!
+    if (initialHtml.length > 0) return false;
+    return !initialArticle;
+  });
 
   useEffect(() => {
-    setIsLoading(true);
-    setContentHtml('');
+    // If we already have article metadata AND rendered content, no client fetch is needed!
+    if (article && contentHtml && contentHtml.length > 0) {
+      return;
+    }
+
+    const found = allArticles.find((a) => a.slug === slug);
+    if (found && !article) setArticle(found);
+
+    let isMounted = true;
     fetch(`/api/articles/${encodeURIComponent(slug)}`)
       .then((res) => {
         if (!res.ok) throw new Error('Not found');
         return res.json();
       })
       .then((data: Article & { content?: string }) => {
+        if (!isMounted) return;
         setArticle(data);
         if (data.content) {
           setContentHtml(renderMarkdown(data.content));
@@ -37,11 +63,14 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
       })
       .catch((err) => {
         console.error('Failed to load article:', err);
-        // Fallback to local array
-        const found = allArticles.find((a) => a.slug === slug);
-        if (found) setArticle(found);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug, allArticles]);
 
   const handleCopy = () => {
@@ -176,12 +205,19 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
         </div>
       </div>
 
-      {/* Featured Cover Image */}
+      {/* Featured Cover Image (LCP element - eager and dimensioned) */}
       {article.featuredImage && (
         <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800/80">
           <img
             src={article.featuredImage}
+            srcSet={`${article.featuredImage.replace('w=1200', 'w=600')} 600w, ${article.featuredImage.replace('w=1200', 'w=900')} 900w, ${article.featuredImage} 1200w`}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px"
             alt={article.imageAlt || article.title}
+            width={1200}
+            height={675}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover"
           />
         </div>
@@ -189,6 +225,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
 
       {/* Article Content Render */}
       <div
+        id="article-content-body"
         className="article-content mb-12"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />

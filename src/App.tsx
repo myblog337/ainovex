@@ -2,11 +2,11 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
-import { HomeView } from './views/HomeView';
 import { Tool, Category, Article, SiteSettings } from './types';
 import { applySeo, loadAnalytics } from './utils/seo';
 
-// Code-splitting: only the home page is in the first bundle; other pages load on demand.
+// Code-splitting: all views load on demand to minimize initial JS execution
+const HomeView = lazy(() => import('./views/HomeView').then((m) => ({ default: m.HomeView })));
 const ToolsView = lazy(() => import('./views/ToolsView').then((m) => ({ default: m.ToolsView })));
 const BlogView = lazy(() => import('./views/BlogView').then((m) => ({ default: m.BlogView })));
 const ArticleDetailView = lazy(() => import('./views/ArticleDetailView').then((m) => ({ default: m.ArticleDetailView })));
@@ -76,6 +76,10 @@ function AppContent() {
   };
 
   useEffect(() => {
+    // If the visitor landed on an article page, do not trigger background data revalidation
+    if (window.location.pathname.startsWith('/blog/')) {
+      return;
+    }
     // Run background revalidation during browser idle time so main thread is not blocked
     if ('requestIdleCallback' in window) {
       (window as any).requestIdleCallback(() => {
@@ -84,7 +88,7 @@ function AppContent() {
     } else {
       setTimeout(() => {
         loadData();
-      }, 600);
+      }, 1500);
     }
   }, []);
 
