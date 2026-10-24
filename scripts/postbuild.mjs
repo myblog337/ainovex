@@ -172,11 +172,24 @@ const trimDesc = (desc) => {
 };
 
 // ============================================================================
+const getArticleSrcSet = (imgPath) => {
+  if (!imgPath) return '';
+  if (imgPath.startsWith('/images/articles/') && imgPath.endsWith('.webp')) {
+    const base = imgPath.slice(0, -5);
+    return `${base}-600w.webp 600w, ${base}-900w.webp 900w, ${imgPath} 1200w`;
+  }
+  if (imgPath.includes('w=1200')) {
+    return `${imgPath.replace('w=1200', 'w=600')} 600w, ${imgPath.replace('w=1200', 'w=900')} 900w, ${imgPath} 1200w`;
+  }
+  return '';
+};
+
+// ============================================================================
 // PRE-RENDER ENGINE: Render semantic HTML & rich metadata for every route
 // ============================================================================
 
 const renderHeader = () => `
-<header class="sticky top-0 z-40 w-full backdrop-blur-xl border-b transition-colors duration-200 bg-white/95 border-slate-200/90 text-slate-900 dark:bg-[#0b101b]/90 dark:border-slate-800/80 dark:text-slate-100 shadow-sm">
+<header class="sticky top-0 z-40 w-full backdrop-blur-xl border-b transition-colors duration-200 bg-white/95 border-slate-200/90 text-slate-900 dark:bg-[#0b101b]/90 dark:border-slate-800/80 dark:text-slate-100 shadow-sm" style="min-height: 80px;">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
     <a href="/" class="cursor-pointer group flex flex-col select-none">
       <div class="flex items-center gap-1 text-2xl font-black tracking-tight">
@@ -193,8 +206,21 @@ const renderHeader = () => `
       <a href="/about/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">About</a>
       <a href="/contact/" class="transition-colors py-1 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">Contact</a>
     </nav>
-    <div class="flex items-center gap-3">
-      <a href="/tools/" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all">Explore Tools</a>
+    <div class="flex items-center gap-2.5 sm:gap-3.5">
+      <button aria-label="Search AI Tools" class="p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/60 transition-colors cursor-pointer">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </button>
+      <button aria-label="Toggle theme" class="relative p-2.5 rounded-xl transition-all duration-300 flex items-center justify-center cursor-pointer shadow-sm text-amber-300 bg-slate-800/80 border border-slate-700/70">
+        <svg class="w-5 h-5 text-sky-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-sky-400"></span>
+      </button>
+      <a href="/tools/" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/30 transition-all">
+        <span>Explore Tools</span>
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+      </a>
+      <button aria-label="Open Navigation Menu" class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/60 transition-colors">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+      </button>
     </div>
   </div>
 </header>`;
@@ -259,15 +285,18 @@ const renderBreadcrumb = (crumbs) => `
 <nav aria-label="Breadcrumb" class="py-3 text-xs text-slate-500 dark:text-slate-400">
   <ol itemScope itemType="https://schema.org/BreadcrumbList" class="flex items-center flex-wrap gap-1.5">
     <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-      <a href="/" itemProp="item" class="flex items-center gap-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+      <a href="/" itemProp="item" class="flex items-center gap-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
         <span itemProp="name">Home</span>
       </a>
       <meta itemProp="position" content="1" />
     </li>
     ${crumbs.map((c, i) => `
-    <li class="text-slate-400 dark:text-slate-600" aria-hidden="true">&rsaquo;</li>
+    <li class="text-slate-400 dark:text-slate-600" aria-hidden="true">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+    </li>
     <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-      ${c.path ? `<a href="${c.path.endsWith('/') ? c.path : c.path + '/'}" itemProp="item" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"><span itemProp="name">${esc(c.label)}</span></a>` : `<span itemProp="name" class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-md inline-block">${esc(c.label)}</span>`}
+      ${c.path ? `<a href="${c.path.endsWith('/') ? c.path : c.path + '/'}" itemProp="item" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"><span itemProp="name">${esc(c.label)}</span></a>` : `<span itemProp="name" class="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[200px] sm:max-w-md inline-block">${esc(c.label)}</span>`}
       <meta itemProp="position" content="${i + 2}" />
     </li>`).join('')}
   </ol>
@@ -318,9 +347,24 @@ function createPageHtml({ title, description, path: pagePath, image, ogType = 'w
 
   // Preload LCP hero/featured image if specified
   if (preloadImage) {
-    const p600 = preloadImage.replace('w=1200', 'w=600');
-    const p900 = preloadImage.replace('w=1200', 'w=900');
-    const imgPreloadTag = `    <link rel="preload" as="image" href="${esc(p900)}" fetchpriority="high" imagesrcset="${esc(p600)} 600w, ${esc(p900)} 900w, ${esc(preloadImage)} 1200w" imagesizes="(max-width: 640px) 100vw, 896px">\n`;
+    let p600 = preloadImage;
+    let p900 = preloadImage;
+    let p1200 = preloadImage;
+    let srcset = '';
+    if (preloadImage.startsWith('/images/articles/') && preloadImage.endsWith('.webp')) {
+      const base = preloadImage.slice(0, -5);
+      p600 = `${base}-600w.webp`;
+      p900 = `${base}-900w.webp`;
+      p1200 = preloadImage;
+      srcset = `${p600} 600w, ${p900} 900w, ${p1200} 1200w`;
+    } else if (preloadImage.includes('w=1200')) {
+      p600 = preloadImage.replace('w=1200', 'w=600');
+      p900 = preloadImage.replace('w=1200', 'w=900');
+      p1200 = preloadImage;
+      srcset = `${p600} 600w, ${p900} 900w, ${p1200} 1200w`;
+    }
+    const srcsetAttr = srcset ? ` imagesrcset="${esc(srcset)}" imagesizes="(max-width: 640px) 100vw, 896px"` : '';
+    const imgPreloadTag = `    <link rel="preload" as="image" href="${esc(p900)}"${srcsetAttr} fetchpriority="high">\n`;
     html = html.replace('</head>', `${imgPreloadTag}  </head>`);
   }
 
@@ -621,10 +665,9 @@ for (const a of articles) {
       <span>&bull;</span>
       <span>${esc(a.publishedAt)}</span>
       <span>&bull;</span>
-      <span>${esc(a.readingTime || '5 min read')}</span>
     </div>
   </div>
-  ${a.featuredImage ? `<div class="relative aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800"><img src="${esc(a.featuredImage)}" srcset="${esc(a.featuredImage.replace('w=1200', 'w=600'))} 600w, ${esc(a.featuredImage.replace('w=1200', 'w=900'))} 900w, ${esc(a.featuredImage)} 1200w" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px" alt="${esc(a.imageAlt || a.title)}" width="1200" height="675" fetchpriority="high" decoding="async" class="w-full h-full object-cover" /></div>` : ''}
+  ${a.featuredImage ? `<div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800/80" style="aspect-ratio: 16/9; min-height: 200px;"><img src="${esc(a.featuredImage)}" srcset="${esc(getArticleSrcSet(a.featuredImage))}" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px" alt="${esc(a.imageAlt || a.title)}" width="1200" height="675" fetchpriority="high" decoding="async" class="w-full h-full object-cover" style="aspect-ratio: 16/9; width: 100%; height: auto;" /></div>` : ''}
   <div id="article-content-body" class="article-content mb-12">
     ${bodyHtml}
   </div>

@@ -2,14 +2,14 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { ArticleDetailView } from './views/ArticleDetailView';
 import { Tool, Category, Article, SiteSettings } from './types';
 import { applySeo, loadAnalytics } from './utils/seo';
 
-// Code-splitting: all views load on demand to minimize initial JS execution
+// Code-splitting: heavy non-article views load on demand to minimize initial JS execution
 const HomeView = lazy(() => import('./views/HomeView').then((m) => ({ default: m.HomeView })));
 const ToolsView = lazy(() => import('./views/ToolsView').then((m) => ({ default: m.ToolsView })));
 const BlogView = lazy(() => import('./views/BlogView').then((m) => ({ default: m.BlogView })));
-const ArticleDetailView = lazy(() => import('./views/ArticleDetailView').then((m) => ({ default: m.ArticleDetailView })));
 const CategoriesView = lazy(() => import('./views/CategoriesView').then((m) => ({ default: m.CategoriesView })));
 const CategoryDetailView = lazy(() => import('./views/CategoryDetailView').then((m) => ({ default: m.CategoryDetailView })));
 const AboutView = lazy(() => import('./views/AboutView').then((m) => ({ default: m.AboutView })));

@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Share2, Check, Tag } from 'lucide-react';
-import { renderMarkdown } from '../utils/markdown';
 import { Article } from '../types';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { JsonLd } from '../components/JsonLd';
+
+function getResponsiveSrcSet(imgPath: string): string {
+  if (!imgPath) return '';
+  if (imgPath.startsWith('/images/articles/') && imgPath.endsWith('.webp')) {
+    const base = imgPath.slice(0, -5);
+    return `${base}-600w.webp 600w, ${base}-900w.webp 900w, ${imgPath} 1200w`;
+  }
+  if (imgPath.includes('w=1200')) {
+    return `${imgPath.replace('w=1200', 'w=600')} 600w, ${imgPath.replace('w=1200', 'w=900')} 900w, ${imgPath} 1200w`;
+  }
+  return '';
+}
 
 interface ArticleDetailViewProps {
   slug: string;
@@ -54,10 +65,11 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
         if (!res.ok) throw new Error('Not found');
         return res.json();
       })
-      .then((data: Article & { content?: string }) => {
+      .then(async (data: Article & { content?: string }) => {
         if (!isMounted) return;
         setArticle(data);
         if (data.content) {
+          const { renderMarkdown } = await import('../utils/markdown');
           setContentHtml(renderMarkdown(data.content));
         }
       })
@@ -205,12 +217,15 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
         </div>
       </div>
 
-      {/* Featured Cover Image (LCP element - eager and dimensioned) */}
+      {/* Featured Cover Image (LCP element - eager, self-hosted, dimensioned) */}
       {article.featuredImage && (
-        <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800/80">
+        <div
+          className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10 shadow-lg border border-slate-200 dark:border-slate-800/80"
+          style={{ aspectRatio: '16/9', minHeight: '200px' }}
+        >
           <img
             src={article.featuredImage}
-            srcSet={`${article.featuredImage.replace('w=1200', 'w=600')} 600w, ${article.featuredImage.replace('w=1200', 'w=900')} 900w, ${article.featuredImage} 1200w`}
+            srcSet={getResponsiveSrcSet(article.featuredImage)}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 896px"
             alt={article.imageAlt || article.title}
             width={1200}
@@ -219,6 +234,7 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
             fetchPriority="high"
             decoding="async"
             className="w-full h-full object-cover"
+            style={{ aspectRatio: '16/9', width: '100%', height: 'auto' }}
           />
         </div>
       )}

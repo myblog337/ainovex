@@ -153,16 +153,33 @@
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
-# ---- Caching (Vite adds content hashes to assets) ----
+# ---- Caching (Vite adds content hashes to assets, images are immutable) ----
 [[headers]]
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
+  for = "/images/articles/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "/blog/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/favicon.svg"
